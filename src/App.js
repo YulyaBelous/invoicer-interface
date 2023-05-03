@@ -1,24 +1,27 @@
-import logo from './logo.svg';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import Header from "./shared/layout/header/header";
+
 import './App.css';
+import Invoice from "./entities/invoice/invoice";
+import Supplier from "./entities/supplier/supplier";
+import Customer from "./entities/customer/customer";
+import Address from "./entities/address/address";
+import BankAccount from "./entities/bank-account/bank-account";
+import {Route, Routes, BrowserRouter as Router} from "react-router-dom";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Header/>
+        <Routes>
+            <Route path="/invoice" element={<Invoice/>}/>
+            <Route path="/supplier" element={<Supplier/>}/>
+            <Route path="/customer" element={<Customer/>}/>
+            <Route path="/address" element={<Address/>}/>
+            <Route path="/bank-account" element={<BankAccount/>}/>
+        </Routes>
+    </Router>
   );
 }
 
