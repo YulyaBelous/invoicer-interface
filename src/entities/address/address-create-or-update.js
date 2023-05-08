@@ -24,6 +24,9 @@ export const CreateOrUpdateAddress = (props) => {
     }, []);
 
     const handleClickOpen = () => {
+        if(!isNew) {
+            props.address.customer? setRadioValue('2'): setRadioValue('1');
+        }
         setShow(true);
         setAddress(props.address);
     };

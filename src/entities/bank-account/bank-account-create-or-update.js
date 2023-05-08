@@ -26,6 +26,9 @@ export const CreateOrUpdateBankAccount = (props) => {
     }, []);
 
     const handleClickOpen = () => {
+        if(!isNew) {
+            props.bankAccount.customer? setRadioValue('2'): setRadioValue('1');
+        }
         setShow(true);
         setBankAccount(props.bankAccount);
     };
@@ -121,10 +124,10 @@ export const CreateOrUpdateBankAccount = (props) => {
                         </Form.Group>
                         <Form.Label >Address</Form.Label>
                         <Form.Select className="mb-3" name="address">
-                            <option>{props.bankAccount?.address? <p>{props.bankAccount.address.country}{", "}{props.bankAccount.address.city}{", "}{props.bankAccount.address.postCode}{", "}{props.bankAccount.address.streetLine1}</p> : 'Select Address'}</option>
+                            <option>{props.bankAccount?.address? `${props.bankAccount.address.country}, ${props.bankAccount.address.city}, ${props.bankAccount.address.postCode}, ${props.bankAccount.address.streetLine1}` : 'Select Address'}</option>
                             {
                                 addresses ? addresses.map(address =>
-                                    <option value={address.id} key={address.id}><p>{address.country}{", "}{address.city}{", "}{address.postCode}{", "}{address.streetLine1}</p></option>
+                                    <option value={address.id} key={address.id}> {`${address.country}, ${address.city}, ${address.postCode}, ${address.streetLine1}`}</option>
                                 ) : null
                             }
                         </Form.Select>
