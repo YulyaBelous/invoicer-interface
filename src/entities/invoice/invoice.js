@@ -5,6 +5,7 @@ import ViewSupplier from "../supplier/supplier-view";
 import ViewCustomer from "../customer/customer-view";
 import useEntitiesService from "../entities-service";
 import {CreateOrUpdateInvoice} from "./invoice-create-or-update";
+import Pageable from "../../shared/layout/pageable";
 
 const Invoice = () => {
     const [invoices, setInvoices] = useState([]);
@@ -72,6 +73,7 @@ const Invoice = () => {
                         ))}
                     </tbody>
                 </Table>
+                <Pageable currentPage = {1}/>
             </Container>
         </Card.Body>
     </Card>
