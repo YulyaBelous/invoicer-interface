@@ -1,33 +1,26 @@
-import axios from 'axios';
-import {Button, Container, Table, Card} from "react-bootstrap";
-import {FiletypePdf, PencilFill, Trash3Fill} from "react-bootstrap-icons";
+import {Button, Container, Table, Card, ButtonGroup, Row, Col} from "react-bootstrap";
+import {FiletypePdf, Trash3Fill} from "react-bootstrap-icons";
 import {useState, useEffect} from "react";
-import CreateInvoice from "./invoice-create";
+import ViewSupplier from "../supplier/supplier-view";
+import ViewCustomer from "../customer/customer-view";
+import useEntitiesService from "../entities-service";
+import {CreateOrUpdateInvoice} from "./invoice-create-or-update";
 
 const Invoice = () => {
     const [invoices, setInvoices] = useState([]);
+    const {loading, getEntities, createEntity, deleteEntity, updateEntity, error, clearError} = useEntitiesService();
 
     useEffect(() => {
-        fetchInvoices();
+        getEntities('invoices', setInvoices);
     }, []);
 
-    const fetchInvoices = async () => {
-         await axios.get("http://localhost:8080/api/invoices")
-            .then(data => {
-                setInvoices(data.data)
-            })
-            .catch(err => console.error(err));
-    }
-
     const createInvoice = async (invoice) => {
-        await axios.post(`http://localhost:8080/api/invoices`,  invoice)
-            .then(() => fetchInvoices())
-            .catch(err => console.error(err))
+        createEntity('invoices', invoice, setInvoices);
     }
 
-    const deleteInvoice = async (id) => {
-        await axios.delete(`http://localhost:8080/api/invoices/${id}`)
-            .then(() => fetchInvoices())
+    const updateInvoice = async (invoice, id) => {
+        console.log(invoice);
+        updateEntity('invoices', invoice, setInvoices, id);
     }
 
     return(
@@ -35,7 +28,7 @@ const Invoice = () => {
         <Card.Body>
             <Container fluid>
                 <h2 style={{textAlign: "left"}}>Invoices</h2>
-                <CreateInvoice createInvoice={createInvoice}/>
+                <CreateOrUpdateInvoice createInvoice={createInvoice} isNew={true}/>
                 <Table striped bordered hover >
                     <thead>
                     <tr>
@@ -61,11 +54,22 @@ const Invoice = () => {
                         <td>{invoice.unitPrice}</td>
                         <td>{invoice.quantity}</td>
                         <td>{invoice.amount}</td>
-                        <td>{invoice.supplier ? 1 : ''}</td>
-                        <td>{invoice.customer ? 1 : ''}</td>
-                        <td> <Button variant="primary"><PencilFill/></Button> <Button variant="secondary"><FiletypePdf/></Button> <Button onClick={() => deleteInvoice(invoice.id)}
-                         variant="danger"><Trash3Fill/></Button></td>
-                    </tr>
+                        <td>{invoice.supplier ? <ViewSupplier supplier={invoice.supplier} addressSupplier={invoice.addressSupplier} bankAccountSupplier={invoice.bankAccountSupplier}/> : ''}</td>
+                        <td>{invoice.customer ? <ViewCustomer customer={invoice.customer} addressCustomer={invoice.addressCustomer} bankAccountCustomer={invoice.bankAccountCustomer}/> : ''}</td>
+                        <td>
+                            <Row>
+                                <Col style={{paddingRight: 3, paddingLeft: 10}}>
+                                    <CreateOrUpdateInvoice updateInvoice={updateInvoice} invoice={invoice} isNew={false}/>
+                                </Col>
+                                <Col style={{paddingRight: 3, paddingLeft: 3}}>
+                                    <Button variant="secondary"><FiletypePdf/></Button>
+                                </Col>
+                                <Col style={{paddingRight: 10, paddingLeft: 3}}>
+                                    <Button onClick={() => deleteEntity('invoices', invoice.id, setInvoices)} variant="danger"><Trash3Fill/></Button>
+                                </Col>
+                            </Row>
+                        </td>
+                           </tr>
                         ))}
                     </tbody>
                 </Table>

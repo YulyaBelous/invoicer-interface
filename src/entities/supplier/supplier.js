@@ -1,33 +1,47 @@
-import axios from 'axios';
-import {Button, Container, Table, Card} from "react-bootstrap";
-import {FiletypePdf, PencilFill, Trash3Fill} from "react-bootstrap-icons";
-import {useState, useEffect} from "react";
-import CreateSupplier from "./supplier-create";
+import {Button, Container, Table, Card, Dropdown, Col, Row} from "react-bootstrap";
+import {FiletypePdf, Trash3Fill} from "react-bootstrap-icons";
+import React, {useState, useEffect} from "react";
+import useEntitiesService from "../entities-service";
+import CreateOrUpdateSupplier from "./supplier-create-or-update";
+import ViewAddress from "../address/address-view";
+import {CreateOrUpdateInvoice} from "../invoice/invoice-create-or-update";
 
 const Supplier = () => {
     const [suppliers, setSuppliers] = useState([]);
+    const [invoices, setInvoices] = useState([]);
+    const [addresses, setAddress] = useState([]);
+    const [bankAccounts, setBankAccounts] = useState([]);
+    const {loading, getEntities, createEntity, deleteEntity, updateEntity, error, clearError} = useEntitiesService();
 
     useEffect(() => {
-        fetchSuppliers();
+        getEntities('suppliers', setSuppliers);
+        getEntities('invoices', setInvoices);
+        getEntities('addresses', setAddress);
+        getEntities('bank-accounts', setBankAccounts);
     }, []);
 
-    const fetchSuppliers = async () => {
-        await axios.get("http://localhost:8080/api/suppliers")
-            .then(data => {
-                setSuppliers(data.data)
-            })
-            .catch(err => console.error(err));
-    }
-
     const createSupplier = async (supplier) => {
-        await axios.post(`http://localhost:8080/api/suppliers`,  supplier)
-            .then(() => fetchSuppliers())
-            .catch(err => console.error(err))
+        createEntity('suppliers', supplier, setSuppliers);
     }
 
-    const deleteSupplier = async (id) => {
-        await axios.delete(`http://localhost:8080/api/suppliers/${id}`)
-            .then(() => fetchSuppliers())
+    const updateSupplier = async (supplier, id) => {
+        updateEntity('suppliers', supplier, setSuppliers, id);
+    }
+
+    const viewAllList = (list, name, title) => {
+        const listFiltered = list.filter(item => item.supplier? item.supplier.name === name : null);
+        return (
+            <Dropdown>
+                <Dropdown.Toggle variant="success" id="dropdown-basic">{title}</Dropdown.Toggle>
+                <Dropdown.Menu>
+                    {listFiltered.map((item, i) => (
+                        <Dropdown.Item key={i}>
+                            {item.city? <ViewAddress address={item}/> : (item.id)}
+                        </Dropdown.Item>
+                    ))}
+                </Dropdown.Menu>
+            </Dropdown>
+        );
     }
 
     return(
@@ -35,7 +49,7 @@ const Supplier = () => {
             <Card.Body>
                 <Container fluid>
                     <h2 style={{textAlign: "left"}}>Suppliers</h2>
-                    <CreateSupplier createSupplier={createSupplier}/>
+                    <CreateOrUpdateSupplier createSupplier={createSupplier} isNew={true}/>
                     <Table striped bordered hover >
                         <thead>
                         <tr>
@@ -58,11 +72,24 @@ const Supplier = () => {
                                 <td>{supplier.shortName}</td>
                                 <td>{supplier.fullName}</td>
                                 <td>{supplier.taxCode}</td>
-                                <td>{supplier.invoises ? 1 : ''}</td>
-                                <td>{supplier.addresses ? 1 : ''}</td>
-                                <td>{supplier.bankAccounts ? 1 : ''}</td>
-                                <td> <Button variant="primary"><PencilFill/></Button> <Button variant="secondary"><FiletypePdf/></Button> <Button onClick={() => deleteSupplier(supplier.id)}
-                                                                                                                                                  variant="danger"><Trash3Fill/></Button></td>
+                                <td>{viewAllList(invoices, supplier.name, 'Invoices')}</td>
+                                <td>{viewAllList(addresses, supplier.name, 'Addresses')}</td>
+                                <td>{viewAllList(bankAccounts, supplier.name, 'Bank Accounts')}</td>
+                                <td>
+                                    <Row>
+                                        <Col style={{paddingRight: 3, paddingLeft: 15}}>
+                                            <CreateOrUpdateSupplier updateSupplier={updateSupplier} isNew={false} supplier={supplier}/>
+                                        </Col>
+                                        <Col style={{paddingRight: 3, paddingLeft: 3}}>
+                                            <Button variant="secondary"><FiletypePdf/></Button>
+                                        </Col>
+                                        <Col style={{paddingRight: 10, paddingLeft: 3}}>
+                                            <Button
+                                                onClick={() => deleteEntity('suppliers', supplier.id, setSuppliers)}
+                                                variant="danger"><Trash3Fill/></Button>
+                                        </Col>
+                                    </Row>
+                                </td>
                             </tr>
                         ))}
                         </tbody>
@@ -74,3 +101,4 @@ const Supplier = () => {
 }
 
 export default Supplier;
+

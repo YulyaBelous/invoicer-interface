@@ -1,33 +1,25 @@
-import axios from 'axios';
-import {Button, Container, Table, Card} from "react-bootstrap";
-import {FiletypePdf, PencilFill, Trash3Fill} from "react-bootstrap-icons";
+import {Button, Container, Table, Card, Col, Row} from "react-bootstrap";
+import {FiletypePdf, Trash3Fill} from "react-bootstrap-icons";
 import {useState, useEffect} from "react";
-import CreateBankAccount from "./bank-account-create";
+import ViewAddress from "../address/address-view";
+import useEntitiesService from "../entities-service";
+import {CreateOrUpdateBankAccount} from "./bank-account-create-or-update";
+import {CreateOrUpdateInvoice} from "../invoice/invoice-create-or-update";
 
 const BankAccount = () => {
     const [bankAccounts, setBankAccounts] = useState([]);
+    const {loading, getEntities, createEntity, deleteEntity, updateEntity, error, clearError} = useEntitiesService();
 
     useEffect(() => {
-        fetchBankAccounts();
+        getEntities('bank-accounts', setBankAccounts);
     }, []);
 
-    const fetchBankAccounts = async () => {
-        await axios.get("http://localhost:8080/api/bank-accounts")
-            .then(data => {
-                setBankAccounts(data.data)
-            })
-            .catch(err => console.error(err));
-    }
-
     const createBankAccount = async (bankAccount) => {
-        await axios.post(`http://localhost:8080/api/bank-accounts`,  bankAccount)
-            .then(() => fetchBankAccounts())
-            .catch(err => console.error(err))
+        createEntity('bank-accounts', bankAccount, setBankAccounts);
     }
 
-    const deleteBankAccount = async (id) => {
-        await axios.delete(`http://localhost:8080/api/bank-accounts/${id}`)
-            .then(() => fetchBankAccounts())
+    const updateBankAccount = async (bankAccount, id) => {
+        updateEntity('bank-accounts', bankAccount, setBankAccounts, id);
     }
 
     return(
@@ -35,7 +27,7 @@ const BankAccount = () => {
             <Card.Body>
                 <Container fluid>
                     <h2 style={{textAlign: "left"}}>Bank Accounts</h2>
-                    <CreateBankAccount createBankAccount={createBankAccount}/>
+                    <CreateOrUpdateBankAccount createBankAccount={createBankAccount} isNew={true}/>
                     <Table striped bordered hover >
                         <thead>
                         <tr>
@@ -44,10 +36,10 @@ const BankAccount = () => {
                             <th>Account number</th>
                             <th>Bank name</th>
                             <th>Swift</th>
+                            <th>Address</th>
                             <th>Correspondent name</th>
                             <th>Correspondent address</th>
                             <th>Correspondent swift</th>
-                            <th>Address</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
@@ -59,12 +51,24 @@ const BankAccount = () => {
                                 <td>{account.accountNumber}</td>
                                 <td>{account.bankName}</td>
                                 <td>{account.swift}</td>
+                                <td>{account.address ? <ViewAddress address={account.address}/> : ''}</td>
                                 <td>{account.correspondentName}</td>
                                 <td>{account.correspondentAddress}</td>
                                 <td>{account.correspondentSwift}</td>
-                                <td>{account.address ? 1 : ''}</td>
-                                <td> <Button variant="primary"><PencilFill/></Button> <Button variant="secondary"><FiletypePdf/></Button> <Button onClick={() => deleteBankAccount(account.id)}
-                                                                                                                                                  variant="danger"><Trash3Fill/></Button></td>
+                                <td>
+                                    <Row>
+                                        <Col style={{paddingRight: 3, paddingLeft: 10}}>
+                                            <CreateOrUpdateBankAccount updateBankAccount={updateBankAccount} bankAccount={account} isNew={false}/>
+                                        </Col>
+                                        <Col style={{paddingRight: 3, paddingLeft: 3}}>
+                                            <Button variant="secondary"><FiletypePdf/></Button>
+                                        </Col>
+                                        <Col style={{paddingRight: 10, paddingLeft: 3}}>
+                                            <Button onClick={() => deleteEntity('bank-accounts', account.id, setBankAccounts)}
+                                                    variant="danger"><Trash3Fill/></Button>
+                                        </Col>
+                                    </Row>
+                                </td>
                             </tr>
                         ))}
                         </tbody>

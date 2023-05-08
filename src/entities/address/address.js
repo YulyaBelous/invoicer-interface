@@ -1,33 +1,24 @@
-import axios from 'axios';
-import {Button, Container, Table, Card} from "react-bootstrap";
-import {FiletypePdf, PencilFill, Trash3Fill} from "react-bootstrap-icons";
-import {useState, useEffect} from "react";
-import CreateAddress from "./address-create";
+import {Button, Container, Table, Card, Col, Row} from "react-bootstrap";
+import {FiletypePdf, PencilFill, Plus, Trash3Fill} from "react-bootstrap-icons";
+import React, {useState, useEffect} from "react";
+import useEntitiesService from "../entities-service";
+import {CreateOrUpdateAddress} from "./address-create-or-update";
+import {CreateOrUpdateInvoice} from "../invoice/invoice-create-or-update";
 
 const Address = () => {
     const [addresses, setAddress] = useState([]);
+    const {loading, getEntities, createEntity, deleteEntity, updateEntity, error, clearError} = useEntitiesService();
 
     useEffect(() => {
-        fetchAddress();
+        getEntities('addresses', setAddress);
     }, []);
 
-    const fetchAddress = async () => {
-        await axios.get("http://localhost:8080/api/addresses")
-            .then(data => {
-                setAddress(data.data)
-            })
-            .catch(err => console.error(err));
-    }
-
     const createAddress = async (address) => {
-        await axios.post(`http://localhost:8080/api/addresses`,  address)
-            .then(() => fetchAddress())
-            .catch(err => console.error(err))
+        createEntity('addresses', address, setAddress);
     }
 
-    const deleteAddress = async (id) => {
-        await axios.delete(`http://localhost:8080/api/addresses/${id}`)
-            .then(() => fetchAddress())
+    const updateAddress = async (address, id) => {
+        updateEntity('addresses', address, setAddress, id);
     }
 
     return(
@@ -35,7 +26,7 @@ const Address = () => {
             <Card.Body>
                 <Container fluid>
                     <h2 style={{textAlign: "left"}}>Address</h2>
-                    <CreateAddress createAddress={createAddress}/>
+                    <CreateOrUpdateAddress createAddress={createAddress} isNew={true}/>
                     <Table striped bordered hover >
                         <thead>
                         <tr>
@@ -49,6 +40,7 @@ const Address = () => {
                             <th>Email</th>
                             <th>Phone 1</th>
                             <th>Phone 2</th>
+                            <th>Owner</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
@@ -65,8 +57,24 @@ const Address = () => {
                                 <td>{address.email}</td>
                                 <td>{address.phone1}</td>
                                 <td>{address.phone2}</td>
-                                <td> <Button variant="primary"><PencilFill/></Button> <Button variant="secondary"><FiletypePdf/></Button> <Button onClick={() => deleteAddress(address.id)}
-                                                                                                                                                  variant="danger"><Trash3Fill/></Button></td>
+                                 <td>{address.supplier? address.supplier.name : ''}
+                                     {address.customer? address.customer.name : ''}
+                                 </td>
+                                <td>
+                                        <Row>
+                                            <Col style={{paddingRight: 3, paddingLeft: 10}}>
+                                                <CreateOrUpdateAddress updateAddress={updateAddress} address={address} isNew={false}/>
+                                            </Col>
+                                            <Col  style={{paddingRight: 3, paddingLeft: 3}}>
+                                                <Button variant="secondary"><FiletypePdf/></Button>
+                                            </Col>
+                                            <Col  style={{paddingRight: 10, paddingLeft: 3}}>
+                                                <Button onClick={() => deleteEntity('addresses', address.id, setAddress)}
+                                                        variant="danger"><Trash3Fill/></Button>
+                                            </Col>
+                                        </Row>
+
+                                </td>
                             </tr>
                         ))}
                         </tbody>
