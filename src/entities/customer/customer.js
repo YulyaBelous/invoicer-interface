@@ -4,7 +4,6 @@ import React, {useState, useEffect} from "react";
 import useEntitiesService from "../entities-service";
 import {CreateOrUpdateCustomer} from "./customer-create-or-update";
 import ViewAddress from "../address/address-view";
-import {CreateOrUpdateInvoice} from "../invoice/invoice-create-or-update";
 
 const Customer = () => {
     const [customers, setCustomers] = useState([]);
@@ -21,11 +20,11 @@ const Customer = () => {
     }, []);
 
     const createCustomer = async (customer) => {
-        createEntity('customers', customer, setCustomers);
+        await createEntity('customers', customer, setCustomers);
     }
 
     const updateCustomer = async (customer, id) => {
-        updateEntity('customers', customer, setCustomers, id);
+        await updateEntity('customers', customer, setCustomers, id);
     }
 
     const viewAllList = (list, name, title) => {

@@ -1,4 +1,4 @@
-import {Button, Container, Table, Card, ButtonGroup, Row, Col} from "react-bootstrap";
+import {Button, Container, Table, Card, Row, Col} from "react-bootstrap";
 import {FiletypePdf, Trash3Fill} from "react-bootstrap-icons";
 import {useState, useEffect} from "react";
 import ViewSupplier from "../supplier/supplier-view";
@@ -10,17 +10,16 @@ const Invoice = () => {
     const [invoices, setInvoices] = useState([]);
     const {loading, getEntities, createEntity, deleteEntity, updateEntity, error, clearError} = useEntitiesService();
 
-    useEffect(() => {
-        getEntities('invoices', setInvoices);
+    useEffect( () => {
+         getEntities('invoices', setInvoices);
     }, []);
 
     const createInvoice = async (invoice) => {
-        createEntity('invoices', invoice, setInvoices);
+         await createEntity('invoices', invoice, setInvoices);
     }
 
     const updateInvoice = async (invoice, id) => {
-        console.log(invoice);
-        updateEntity('invoices', invoice, setInvoices, id);
+        await updateEntity('invoices', invoice, setInvoices, id);
     }
 
     return(
