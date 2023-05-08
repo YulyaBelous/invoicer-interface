@@ -27,6 +27,10 @@ export const CreateOrUpdateInvoice = (props) => {
     }, []);
 
     const handleClickOpen = () => {
+        if(!isNew) {
+            props.invoice?.supplier? setIsSelectSupplier(true) : setIsSelectSupplier(false);
+            props.invoice?.customer? setIsSelectCustomer(true) : setIsSelectCustomer(false);
+        }
         setShow(true);
         setInvoice(props.invoice);
     };
@@ -96,16 +100,15 @@ export const CreateOrUpdateInvoice = (props) => {
         handleClose();
     }
 
-    const viewAddressOrBank = (title, entityName, isAddress) => {
-        console.log(entityName)
+    const viewAddressOrBank = (title, entityName, entity, isAddress) => {
         return (
             <>
                 <Form.Label >{title}</Form.Label>
                 <Form.Select className="mb-3" name={entityName}>
-                    <option>Select {title}</option>
+                    <option>{ entity? (isAddress? `${entity?.country}, ${entity?.city}, ${entity?.postCode}, ${entity?.streetLine1}` : entity?.bankName) : (`Select ${title}`)}</option>
                     {
                         isAddress? (addressFiltered ? addressFiltered.map(address =>
-                            <option value={address?.id} key={address.id}>{address.country}{", "}{address.city}{", "}{address.postCode}{", "}{address.streetLine1}</option>
+                            <option value={address?.id} key={address.id}>{`${address.country}, ${address.city}, ${address.postCode}, ${address.streetLine1}`}</option>
                         ) : null)
                         : (bankFiltered ? bankFiltered.map(account =>
                         <option value={account?.id} key={account.id}>{account.bankName}</option>
@@ -159,8 +162,8 @@ export const CreateOrUpdateInvoice = (props) => {
                                 ) : null
                             }
                         </Form.Select>
-                        {isSelectSupplier ? viewAddressOrBank("Address Supplier", "addressSupplier", true) : null}
-                        {isSelectSupplier ? viewAddressOrBank("Bank Account Supplier", "bankAccountSupplier", false) : null}
+                        {isSelectSupplier ? viewAddressOrBank("Address Supplier", "addressSupplier", props.invoice?.addressSupplier, true) : null}
+                        {isSelectSupplier ? viewAddressOrBank("Bank Account Supplier", "bankAccountSupplier", props.invoice?.bankAccountSupplier, false) : null}
                         <Form.Label >Customer</Form.Label>
                         <Form.Select className="mb-3" name="customer">
                             <option>{props.invoice?.customer? props.invoice.customer.name: 'Select Customer'} </option>
@@ -170,10 +173,8 @@ export const CreateOrUpdateInvoice = (props) => {
                                 ) : null
                             }
                         </Form.Select>
-                        {isSelectCustomer? (viewAddressOrBank("Address Customer", "addressCustomer", true)
-
-                        ) : null}
-                        {isSelectCustomer? viewAddressOrBank("Bank Account Customer", "bankAccountCustomer", false) : null}
+                        {isSelectCustomer? viewAddressOrBank("Address Customer", "addressCustomer", props.invoice?.addressCustomer, true) : null}
+                        {isSelectCustomer? viewAddressOrBank("Bank Account Customer", "bankAccountCustomer", props.invoice?.bankAccountCustomer, false) : null}
                         <Button className="d-block mx-auto"  onClick={handleSave} variant="primary" >
                             Submit
                         </Button>
