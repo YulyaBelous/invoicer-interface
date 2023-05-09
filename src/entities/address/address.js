@@ -7,6 +7,8 @@ import useEntitiesService from "../entities-service";
 import {CreateOrUpdateAddress} from "./address-create-or-update";
 import Pageable from "../../shared/layout/pageable";
 import Loading from "../../shared/layout/loading";
+import {NavLink} from "react-router-dom";
+import ViewArrowSort from "../../shared/layout/view-arrow-sort";
 
 const Address = () => {
 
@@ -14,6 +16,8 @@ const Address = () => {
 
     const [pageable, setPageable] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
+    const [isSort, setIsSort] = useState(true);
+    const [keySort, setKeySort] = useState("id");
 
     const {getEntities, createEntity, deleteEntity, updateEntity, loading} = useEntitiesService();
 
@@ -38,6 +42,16 @@ const Address = () => {
         });
     }
 
+    const sort = (sortParam) => {
+        let sortDirect;
+        setKeySort(sortParam);
+        setIsSort(!isSort);
+        isSort? sortDirect = "desc" : sortDirect = "asc";
+        getEntities('addresses', setAddress, currentPage, sortParam, sortDirect).then(value => {
+            setPageable(value);
+        });
+    }
+
     const RenderAddress = () => {
         return(
             <Container fluid>
@@ -45,17 +59,17 @@ const Address = () => {
                 <Table striped bordered hover >
                     <thead>
                     <tr>
-                        <th>Id</th>
-                        <th>Country</th>
-                        <th>Province</th>
-                        <th>Post code</th>
-                        <th>City</th>
-                        <th>Street line 1</th>
-                        <th>Street line 2</th>
-                        <th>Email</th>
-                        <th>Phone 1</th>
-                        <th>Phone 2</th>
-                        <th>Owner</th>
+                        <th>Id <NavLink onClick={() => sort("id")}> <ViewArrowSort sortParam="id" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                        <th>Country <NavLink onClick={() => sort("country")}> <ViewArrowSort sortParam="country" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                        <th>Province <NavLink onClick={() => sort("province")}> <ViewArrowSort sortParam="province" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                        <th>Postcode <NavLink onClick={() => sort("postCode")}> <ViewArrowSort sortParam="postCode" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                        <th>City <NavLink onClick={() => sort("city")}> <ViewArrowSort sortParam="city" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                        <th>Street line 1 <NavLink onClick={() => sort("streetLine1")}> <ViewArrowSort sortParam="streetLine1" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                        <th>Street line 2 <NavLink onClick={() => sort("streetLine2")}> <ViewArrowSort sortParam="streetLine2" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                        <th>Email <NavLink onClick={() => sort("email")}> <ViewArrowSort sortParam="email" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                        <th>Phone 1 <NavLink onClick={() => sort("phone1")}> <ViewArrowSort sortParam="phone1" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                        <th>Phone 2 <NavLink onClick={() => sort("phone2")}> <ViewArrowSort sortParam="phone2" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                        <th>Owner </th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -76,18 +90,18 @@ const Address = () => {
                                 {address.customer? address.customer.name : ''}
                             </td>
                             <td>
-                                <Row>
-                                    <Col style={{paddingRight: 3, paddingLeft: 10}}>
+                                    <Row style={{paddingRight: 10, paddingLeft: 10}}>
                                         <CreateOrUpdateAddress updateAddress={updateAddress} address={address} isNew={false}/>
-                                    </Col>
-                                    <Col  style={{paddingRight: 3, paddingLeft: 3}}>
-                                        <Button variant="secondary"><FiletypePdf/></Button>
-                                    </Col>
-                                    <Col  style={{paddingRight: 10, paddingLeft: 3}}>
-                                        <Button onClick={() => deleteEntity('addresses', address.id, setAddress, currentPage)}
-                                                variant="danger"><Trash3Fill/></Button>
-                                    </Col>
-                                </Row>
+                                    </Row>
+                                    <Row  style={{paddingRight: 10, paddingLeft: 10}}>
+                                        <div><Button variant="secondary"><FiletypePdf/></Button></div>
+                                    </Row>
+                                    <Row  style={{paddingRight: 10, paddingLeft: 10}}>
+                                        <div>
+                                            <Button onClick={() => deleteEntity('addresses', address.id, setAddress, currentPage)}
+                                                    variant="danger"><Trash3Fill/></Button>
+                                        </div>
+                                    </Row>
                             </td>
                         </tr>
                     ))}

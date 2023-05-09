@@ -1,7 +1,8 @@
 import {useState, useEffect} from "react";
 
+import {NavLink} from "react-router-dom";
 import {Button, Container, Table, Card, Row, Col} from "react-bootstrap";
-import {ChevronDown, FiletypePdf, Trash3Fill} from "react-bootstrap-icons";
+import {ArrowDown, ArrowUp, ChevronDown, ChevronUp, FiletypePdf, Trash3Fill} from "react-bootstrap-icons";
 
 import useEntitiesService from "../entities-service";
 import {CreateOrUpdateInvoice} from "./invoice-create-or-update";
@@ -9,11 +10,17 @@ import ViewSupplier from "../supplier/supplier-view";
 import ViewCustomer from "../customer/customer-view";
 import Pageable from "../../shared/layout/pageable";
 import Loading from "../../shared/layout/loading";
+import ViewArrowSort from "../../shared/layout/view-arrow-sort";
 
 const Invoice = () => {
+
     const [invoices, setInvoices] = useState([]);
+
     const [pageable, setPageable] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
+    const [isSort, setIsSort] = useState(true);
+    const [keySort, setKeySort] = useState("id");
+
     const {getEntities, createEntity, deleteEntity, updateEntity, loading} = useEntitiesService();
 
     useEffect( () => {
@@ -37,6 +44,16 @@ const Invoice = () => {
         });
     }
 
+    const sort = (sortParam) => {
+        let sortDirect;
+        setKeySort(sortParam);
+        setIsSort(!isSort);
+        isSort? sortDirect = "desc" : sortDirect = "asc";
+        getEntities('invoices', setInvoices, currentPage, sortParam, sortDirect).then(value => {
+            setPageable(value);
+        });
+    }
+
     const RenderInvoice = () => {
             return (
                 <Container fluid>
@@ -44,15 +61,15 @@ const Invoice = () => {
                     <Table striped bordered hover >
                         <thead>
                         <tr>
-                            <th>Id <ChevronDown/></th>
-                            <th>Number</th>
-                            <th>Date</th>
-                            <th>Description</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Amount</th>
-                            <th>Supplier</th>
-                            <th>Customer</th>
+                            <th>Id <NavLink onClick={() => sort("id")}> <ViewArrowSort sortParam="id" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                            <th>Number <NavLink onClick={() => sort("number")}> <ViewArrowSort sortParam="number" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                            <th>Date <NavLink onClick={() => sort("date")}> <ViewArrowSort sortParam="date" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                            <th>Description <NavLink onClick={() => sort("description")}> <ViewArrowSort sortParam="description" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                            <th>Price <NavLink onClick={() => sort("unitPrice")}> <ViewArrowSort sortParam="unitPrice" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                            <th>Quantity <NavLink onClick={() => sort("quantity")}> <ViewArrowSort sortParam="quantity" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                            <th>Amount <NavLink onClick={() => sort("amount")}> <ViewArrowSort sortParam="amount" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                            <th>Supplier <NavLink onClick={() => sort("supplier")}> <ViewArrowSort sortParam="supplier" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                            <th>Customer <NavLink onClick={() => sort("customer")}> <ViewArrowSort sortParam="customer" keySort={keySort} isSort={isSort}/> </NavLink></th>
                             <th>Actions</th>
                         </tr>
                         </thead>

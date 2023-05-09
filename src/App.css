@@ -28,6 +28,17 @@
   color: #61dafb;
 }
 
+.defaultArrow {
+  color: lightblue;
+  height: 13px;
+}
+
+.activeArrow {
+  color: blue;
+  height: 13px;
+
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

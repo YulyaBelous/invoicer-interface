@@ -8,6 +8,8 @@ import CreateOrUpdateSupplier from "./supplier-create-or-update";
 import ViewAddress from "../address/address-view";
 import Pageable from "../../shared/layout/pageable";
 import Loading from "../../shared/layout/loading";
+import {NavLink} from "react-router-dom";
+import ViewArrowSort from "../../shared/layout/view-arrow-sort";
 
 const Supplier = () => {
 
@@ -18,6 +20,8 @@ const Supplier = () => {
 
     const [pageable, setPageable] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
+    const [isSort, setIsSort] = useState(true);
+    const [keySort, setKeySort] = useState("id");
 
     const {getEntities, createEntity, deleteEntity, updateEntity, loading} = useEntitiesService();
 
@@ -45,6 +49,16 @@ const Supplier = () => {
         });
     }
 
+    const sort = (sortParam) => {
+        let sortDirect;
+        setKeySort(sortParam);
+        setIsSort(!isSort);
+        isSort? sortDirect = "desc" : sortDirect = "asc";
+        getEntities('suppliers', setSuppliers, currentPage, sortParam, sortDirect).then(value => {
+            setPageable(value);
+        });
+    }
+
     const viewAllList = (list, name, title) => {
         const listFiltered = list.filter(item => item.supplier? item.supplier.name === name : null);
         return (
@@ -68,11 +82,11 @@ const Supplier = () => {
                 <Table striped bordered hover >
                     <thead>
                     <tr>
-                        <th>Id</th>
-                        <th>Name</th>
-                        <th>Short name</th>
-                        <th>Full name</th>
-                        <th>Tax code</th>
+                        <th>Id <NavLink onClick={() => sort("id")}> <ViewArrowSort sortParam="id" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                        <th>Name <NavLink onClick={() => sort("name")}> <ViewArrowSort sortParam="name" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                        <th>Short name <NavLink onClick={() => sort("shortName")}> <ViewArrowSort sortParam="shortName" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                        <th>Full name <NavLink onClick={() => sort("fullName")}> <ViewArrowSort sortParam="fullName" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                        <th>Tax code <NavLink onClick={() => sort("taxCode")}> <ViewArrowSort sortParam="taxCode" keySort={keySort} isSort={isSort}/> </NavLink></th>
                         <th>Invoices</th>
                         <th>Addresses</th>
                         <th>Bank accounts</th>
