@@ -10,7 +10,7 @@ export const CreateOrUpdateAddress = (props) => {
     const [radioValue, setRadioValue] = useState('1');
     const [show, setShow] = useState(false);
     const [isNew, setIsNew] = useState(true);
-    const {loading, getEntities, error, clearError} = useEntitiesService();
+    const {getEntities} = useEntitiesService();
 
     const radios = [
         { name: 'Supplier', value: '1' },
@@ -40,14 +40,14 @@ export const CreateOrUpdateAddress = (props) => {
             setAddress({
                 ...address,
                 customer: null,
-                supplier: suppliers.find(it => it.id == event.target.value)
+                supplier: suppliers.find(it => it.id.toString() === event.target.value.toString())
             });
         }
         else if(event.target.name === 'customer') {
             setAddress({
                 ...address,
                 supplier: null,
-                customer: customers.find(it => it.id == event.target.value)
+                customer: customers.find(it => it.id.toString() === event.target.value.toString())
             });
         }
         else {

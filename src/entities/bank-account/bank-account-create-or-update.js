@@ -11,7 +11,7 @@ export const CreateOrUpdateBankAccount = (props) => {
     const [radioValue, setRadioValue] = useState('1');
     const [show, setShow] = useState(false);
     const [isNew, setIsNew] = useState(true);
-    const {loading, getEntities, error, clearError} = useEntitiesService();
+    const {getEntities} = useEntitiesService();
 
     const radios = [
         { name: 'Supplier', value: '1' },

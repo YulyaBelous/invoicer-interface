@@ -1,8 +1,7 @@
-import {Button, Container, Modal} from "react-bootstrap";
 import React, {useState} from "react";
-import {PencilFill, XSquareFill} from "react-bootstrap-icons";
 import {NavLink} from "react-router-dom";
-
+import {Button, Container, Modal} from "react-bootstrap";
+import {PencilFill, XSquareFill} from "react-bootstrap-icons";
 
 const ViewAddress = (props) => {
 
@@ -52,13 +51,11 @@ const ViewAddress = (props) => {
                             </> : null
                         }
                     </Container>
-
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={handleClose} variant="secondary"><XSquareFill/> Close</Button>
                     <Button variant="primary"><PencilFill/> Edit</Button>
                 </Modal.Footer>
-
             </Modal>
         </>
     );

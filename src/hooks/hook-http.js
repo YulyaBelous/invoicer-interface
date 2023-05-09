@@ -9,9 +9,9 @@ export const useHttp = () => {
         setLoading(true);
         try {
             const response = await axios({method: method, url: url, data: body});
-            /*if(response!='ok') {
+            if (response.status!==200 && response.status!==201) {
                 throw new Error(`Could not fetch ${url}, status: ${response.status}`)
-            }*/
+            }
             const data = response.data;
             setLoading(false);
             return data;
