@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 
 import {Button, Container, Table, Card, Col, Row} from "react-bootstrap";
-import {FiletypePdf, Trash3Fill} from "react-bootstrap-icons";
+import {Trash3Fill} from "react-bootstrap-icons";
 
 import useEntitiesService from "../entities-service";
 import {CreateOrUpdateBankAccount} from "./bank-account-create-or-update";
@@ -89,9 +89,6 @@ const BankAccount = () => {
                                 <Row>
                                     <Col style={{paddingRight: 3, paddingLeft: 10}}>
                                         <CreateOrUpdateBankAccount updateBankAccount={updateBankAccount} bankAccount={account} isNew={false}/>
-                                    </Col>
-                                    <Col style={{paddingRight: 3, paddingLeft: 3}}>
-                                        <Button variant="secondary"><FiletypePdf/></Button>
                                     </Col>
                                     <Col style={{paddingRight: 10, paddingLeft: 3}}>
                                         <Button onClick={() => deleteEntity('bank-accounts', account.id, setBankAccounts, currentPage)}

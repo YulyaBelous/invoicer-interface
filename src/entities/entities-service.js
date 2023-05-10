@@ -27,7 +27,12 @@ const useEntitiesService = () => {
         getEntities(nameEntity, setState, offset);
     }
 
-    return {loading, getEntities, createEntity, updateEntity, deleteEntity, error, clearError}
+    const reportEntity = async (nameEntity, id) => {
+        const res = await request(`${_apiBase}${nameEntity}/report/${id}`, 'get');
+        return res;
+    }
+
+    return {loading, getEntities, createEntity, updateEntity, deleteEntity, reportEntity, error, clearError}
 }
 
 export default useEntitiesService;

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 
 import {Button, Container, Table, Card, Col, Row} from "react-bootstrap";
-import {FiletypePdf, Trash3Fill} from "react-bootstrap-icons";
+import {Trash3Fill} from "react-bootstrap-icons";
 
 import useEntitiesService from "../entities-service";
 import {CreateOrUpdateAddress} from "./address-create-or-update";
@@ -9,6 +9,7 @@ import Pageable from "../../shared/layout/pageable";
 import Loading from "../../shared/layout/loading";
 import {NavLink} from "react-router-dom";
 import ViewArrowSort from "../../shared/layout/view-arrow-sort";
+import {CreateOrUpdateBankAccount} from "../bank-account/bank-account-create-or-update";
 
 const Address = () => {
 
@@ -69,7 +70,7 @@ const Address = () => {
                         <th>Email <NavLink onClick={() => sort("email")}> <ViewArrowSort sortParam="email" keySort={keySort} isSort={isSort}/> </NavLink></th>
                         <th>Phone 1 <NavLink onClick={() => sort("phone1")}> <ViewArrowSort sortParam="phone1" keySort={keySort} isSort={isSort}/> </NavLink></th>
                         <th>Phone 2 <NavLink onClick={() => sort("phone2")}> <ViewArrowSort sortParam="phone2" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Owner </th>
+                       {/* <th>Owner </th>*/}
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -86,22 +87,19 @@ const Address = () => {
                             <td>{address.email}</td>
                             <td>{address.phone1}</td>
                             <td>{address.phone2}</td>
-                            <td>{address.supplier? address.supplier.name : ''}
+                           {/* <td>{address.supplier? address.supplier.name : ''}
                                 {address.customer? address.customer.name : ''}
-                            </td>
+                            </td>*/}
                             <td>
-                                    <Row style={{paddingRight: 10, paddingLeft: 10}}>
+                                <Row>
+                                    <Col style={{paddingRight: 3, paddingLeft: 10}}>
                                         <CreateOrUpdateAddress updateAddress={updateAddress} address={address} isNew={false}/>
-                                    </Row>
-                                    <Row  style={{paddingRight: 10, paddingLeft: 10}}>
-                                        <div><Button variant="secondary"><FiletypePdf/></Button></div>
-                                    </Row>
-                                    <Row  style={{paddingRight: 10, paddingLeft: 10}}>
-                                        <div>
-                                            <Button onClick={() => deleteEntity('addresses', address.id, setAddress, currentPage)}
-                                                    variant="danger"><Trash3Fill/></Button>
-                                        </div>
-                                    </Row>
+                                    </Col>
+                                    <Col style={{paddingRight: 10, paddingLeft: 3}}>
+                                        <Button onClick={() => deleteEntity('addresses', address.id, setAddress, currentPage)}
+                                                variant="danger"><Trash3Fill/></Button>
+                                    </Col>
+                                </Row>
                             </td>
                         </tr>
                     ))}

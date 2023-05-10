@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 
 import {Button, Container, Table, Card, Dropdown, Col, Row} from "react-bootstrap";
-import {FiletypePdf, Trash3Fill} from "react-bootstrap-icons";
+import {Trash3Fill} from "react-bootstrap-icons";
 
 import useEntitiesService from "../entities-service";
 import {CreateOrUpdateCustomer} from "./customer-create-or-update";
@@ -106,9 +106,6 @@ const Customer = () => {
                                 <Row>
                                     <Col style={{paddingRight: 3, paddingLeft: 15}}>
                                         <CreateOrUpdateCustomer updateCustomer={updateCustomer}  customer={customer} isNew={false}/>
-                                    </Col>
-                                    <Col style={{paddingRight: 3, paddingLeft: 3}}>
-                                        <Button variant="secondary"><FiletypePdf/></Button>
                                     </Col>
                                     <Col style={{paddingRight: 10, paddingLeft: 3}}>
                                         <Button

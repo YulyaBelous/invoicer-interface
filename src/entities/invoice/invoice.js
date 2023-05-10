@@ -2,7 +2,7 @@ import {useState, useEffect} from "react";
 
 import {NavLink} from "react-router-dom";
 import {Button, Container, Table, Card, Row, Col} from "react-bootstrap";
-import {ArrowDown, ArrowUp, ChevronDown, ChevronUp, FiletypePdf, Trash3Fill} from "react-bootstrap-icons";
+import {FiletypePdf, Trash3Fill} from "react-bootstrap-icons";
 
 import useEntitiesService from "../entities-service";
 import {CreateOrUpdateInvoice} from "./invoice-create-or-update";
@@ -21,7 +21,7 @@ const Invoice = () => {
     const [isSort, setIsSort] = useState(true);
     const [keySort, setKeySort] = useState("id");
 
-    const {getEntities, createEntity, deleteEntity, updateEntity, loading} = useEntitiesService();
+    const {getEntities, createEntity, deleteEntity, updateEntity, reportEntity, loading} = useEntitiesService();
 
     useEffect( () => {
          getEntities('invoices', setInvoices, currentPage).then(value => {
@@ -52,6 +52,10 @@ const Invoice = () => {
         getEntities('invoices', setInvoices, currentPage, sortParam, sortDirect).then(value => {
             setPageable(value);
         });
+    }
+
+    const report = (nameEntity, id) => {
+        reportEntity(nameEntity, id);
     }
 
     const RenderInvoice = () => {
@@ -91,7 +95,7 @@ const Invoice = () => {
                                             <CreateOrUpdateInvoice updateInvoice={updateInvoice} invoice={invoice} isNew={false}/>
                                         </Col>
                                         <Col style={{paddingRight: 3, paddingLeft: 3}}>
-                                            <Button variant="secondary"><FiletypePdf/></Button>
+                                            <Button onClick={() => report('invoices', invoice.id)} variant="secondary"><FiletypePdf/></Button>
                                         </Col>
                                         <Col style={{paddingRight: 10, paddingLeft: 3}}>
                                             <Button onClick={() => deleteEntity('invoices', invoice.id, setInvoices, currentPage)}
