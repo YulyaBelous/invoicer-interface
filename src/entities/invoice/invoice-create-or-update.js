@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {Button, Form, Modal} from "react-bootstrap";
 import {PencilFill, Plus} from "react-bootstrap-icons";
 
-import useEntitiesService from "../entities-service";
+import useEntitiesService from "../../services/entities-service";
 import Validation from "../validation";
 
 export const CreateOrUpdateInvoice = (props) => {
@@ -43,7 +43,7 @@ export const CreateOrUpdateInvoice = (props) => {
         setShow(false);
     };
 
-       const handleChange = (event, entity) => {
+   const handleChange = (event, entity) => {
         setInvoice({
             ...invoice,
             [event.target.name] : entity?.find(it => it.id.toString() === event.target.value.toString())
@@ -246,7 +246,7 @@ export const CreateOrUpdateInvoice = (props) => {
                         {viewAddressOrBank("Address Customer", "addressCustomer", addresses, props.invoice?.addressCustomer, true, false, errors.addressCustomer)}
                         {viewAddressOrBank("Bank Account Customer", "bankAccountCustomer", bankAccounts, props.invoice?.bankAccountCustomer, false, false, errors.bankAccountCustomer)}
                         <Button className="d-block mx-auto" type="submit" variant="primary" >
-                            Submit
+                            Save
                         </Button>
                     </Form>
                 </Modal.Body>

@@ -1,6 +1,8 @@
 import {useCallback, useState} from "react";
 import axios from "axios";
 
+import {authHeader} from "../services/auth-header";
+
 export const useHttp = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -8,7 +10,7 @@ export const useHttp = () => {
     const request = useCallback(async (url, method = 'get', body = null) => {
         setLoading(true);
         try {
-            const response = await axios({method: method, url: url, data: body});
+            const response = await axios({method: method, url: url, headers: authHeader(), data: body});
             if (response.status!==200 && response.status!==201) {
                 throw new Error(`Could not fetch ${url}, status: ${response.status}`)
             }

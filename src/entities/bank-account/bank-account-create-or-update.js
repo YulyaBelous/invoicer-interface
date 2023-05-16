@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {PencilFill, Plus} from "react-bootstrap-icons";
 import {Button, ButtonGroup, Form, Modal, ToggleButton} from "react-bootstrap";
-import useEntitiesService from "../entities-service";
+import useEntitiesService from "../../services/entities-service";
 
 export const CreateOrUpdateBankAccount = (props) => {
     const [bankAccount, setBankAccount] = useState();
@@ -150,7 +150,7 @@ export const CreateOrUpdateBankAccount = (props) => {
                         {radioValue === '1' ? viewSupplierOrCustomer("Supplier", "supplier", suppliers, true)
                             : viewSupplierOrCustomer("Customer", "customer", customers, false)}
                         <Button className="d-block mx-auto"  onClick={handleSave} variant="primary" >
-                            Submit
+                            Save
                         </Button>
                     </Form>
                 </Modal.Body>

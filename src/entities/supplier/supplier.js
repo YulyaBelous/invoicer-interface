@@ -3,7 +3,7 @@ import React, {useState, useEffect} from "react";
 import {Button, Container, Table, Card, Dropdown, Col, Row} from "react-bootstrap";
 import {Trash3Fill} from "react-bootstrap-icons";
 
-import useEntitiesService from "../entities-service";
+import useEntitiesService from "../../services/entities-service";
 import CreateOrUpdateSupplier from "./supplier-create-or-update";
 import ViewAddress from "../address/address-view";
 import Pageable from "../../shared/layout/pageable";

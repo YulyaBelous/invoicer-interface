@@ -4,7 +4,7 @@ import {NavLink} from "react-router-dom";
 import {Button, Container, Table, Card, Row, Col} from "react-bootstrap";
 import {FiletypePdf, Trash3Fill} from "react-bootstrap-icons";
 
-import useEntitiesService from "../entities-service";
+import useEntitiesService from "../../services/entities-service";
 import {CreateOrUpdateInvoice} from "./invoice-create-or-update";
 import ViewSupplier from "../supplier/supplier-view";
 import ViewCustomer from "../customer/customer-view";

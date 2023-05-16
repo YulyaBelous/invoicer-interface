@@ -12,17 +12,17 @@ const useEntitiesService = () => {
         return res;
     }
 
-    const createEntity = async (nameEntity, entity, setState, offset) => {
+    const createEntity = async (nameEntity, entity, setState, offset = 0) => {
         await request(`${_apiBase}${nameEntity}`, 'post', entity);
         getEntities(nameEntity, setState, offset);
     }
 
-    const updateEntity = async (nameEntity, entity, setState, id, offset) => {
+    const updateEntity = async (nameEntity, entity, setState, id, offset = 0) => {
         await request(`${_apiBase}${nameEntity}/${id}`, 'put', entity);
         getEntities(nameEntity, setState, offset);
     }
 
-    const deleteEntity = async (nameEntity, id, setState, offset) => {
+    const deleteEntity = async (nameEntity, id, setState, offset = 0) => {
         await request(`${_apiBase}${nameEntity}/${id}`, 'delete');
         getEntities(nameEntity, setState, offset);
     }

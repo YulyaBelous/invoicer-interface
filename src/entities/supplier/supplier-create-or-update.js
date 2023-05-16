@@ -55,7 +55,7 @@ const CreateOrUpdateSupplier = (props) => {
                             <Form.Control defaultValue={props.supplier?.taxCode}  name="taxCode"/>
                         </Form.Group>
                         <Button className="d-block mx-auto"  onClick={handleSave} variant="primary" >
-                            Submit
+                            Save
                         </Button>
                     </Form>
                 </Modal.Body>
