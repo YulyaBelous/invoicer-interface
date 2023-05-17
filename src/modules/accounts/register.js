@@ -54,9 +54,9 @@ const RegisterForm = (props) => {
                             <Form.Label>Password</Form.Label>
                             <Form.Control name="password" type="password" placeholder="Password"/>
                         </Form.Group>
-                        <Button className="d-block mx-auto" type="submit" variant="primary" >
+                        <div className="d-grid gap-2"> <Button type="submit" variant="primary" >
                             Save
-                        </Button>
+                        </Button></div>
                     </Form>
                 </Modal.Body>
             </Modal>

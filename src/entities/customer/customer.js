@@ -22,29 +22,37 @@ const Customer = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [isSort, setIsSort] = useState(true);
     const [keySort, setKeySort] = useState("id");
+    const [isAdmin, setIsAdmin] = useState(false);
 
     const {getEntities, createEntity, deleteEntity, updateEntity, loading} = useEntitiesService();
 
+    const user = JSON.parse(localStorage.getItem("user"));
+
     useEffect(() => {
-        getEntities('customers', setCustomers, currentPage).then(value => {
+        getEntities('customers', setCustomers, currentPage, user.username).then(value => {
             setPageable(value);
         });
-        getEntities('invoices', setInvoices);
-        getEntities('addresses', setAddresses);
-        getEntities('bank-accounts', setBankAccounts);
+        getEntities('invoices', setInvoices, currentPage, user.username);
+        getEntities('addresses', setAddresses, currentPage, user.username);
+        getEntities('bank-accounts', setBankAccounts, currentPage, user.username);
+        user.authorities.map((authority) => {
+            if(authority === "ROLE_ADMIN") {
+                setIsAdmin(true);
+            }
+        })
     }, []);
 
     const createCustomer = async (customer) => {
-        await createEntity('customers', customer, setCustomers, currentPage);
+        await createEntity('customers', customer, setCustomers, currentPage, user.username);
     }
 
     const updateCustomer = async (customer, id) => {
-        await updateEntity('customers', customer, setCustomers, id, currentPage);
+        await updateEntity('customers', customer, setCustomers, id, currentPage, user.username);
     }
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('customers', setCustomers, currentPage).then(value => {
+        getEntities('customers', setCustomers, currentPage, user.username).then(value => {
             setPageable(value);
         });
     }
@@ -54,7 +62,7 @@ const Customer = () => {
         setKeySort(sortParam);
         setIsSort(!isSort);
         isSort? sortDirect = "desc" : sortDirect = "asc";
-        getEntities('customers', setCustomers, currentPage, sortParam, sortDirect).then(value => {
+        getEntities('customers', setCustomers, currentPage, user.username, sortParam, sortDirect).then(value => {
             setPageable(value);
         });
     }
@@ -76,7 +84,7 @@ const Customer = () => {
     const RenderCustomer = () => {
         return(
             <Container fluid>
-                <CreateOrUpdateCustomer createCustomer={createCustomer} isNew={true}/>
+                <CreateOrUpdateCustomer createCustomer={createCustomer} isNew={true} isAdmin={isAdmin}/>
                 <Table striped bordered hover >
                     <thead>
                     <tr>
@@ -109,7 +117,7 @@ const Customer = () => {
                                     </Col>
                                     <Col style={{paddingRight: 10, paddingLeft: 3}}>
                                         <Button
-                                            onClick={() => deleteEntity('customers', customer.id, setCustomers, currentPage)} variant="danger"><Trash3Fill/></Button>
+                                            onClick={() => deleteEntity('customers', customer.id, setCustomers, currentPage, user.username)} variant="danger"><Trash3Fill/></Button>
                                     </Col>
                                 </Row>
                             </td>

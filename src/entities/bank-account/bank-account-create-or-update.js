@@ -18,10 +18,12 @@ export const CreateOrUpdateBankAccount = (props) => {
         { name: 'Customer', value: '2' }
     ];
 
+    const username = JSON.parse(localStorage.getItem("user")).username;
+
     useEffect(() => {
-        getEntities('addresses', setAddress);
-        getEntities('suppliers', setSuppliers);
-        getEntities('customers', setCustomers);
+        getEntities('addresses', setAddress, 0, username);
+        getEntities('suppliers', setSuppliers, 0, username);
+        getEntities('customers', setCustomers, 0, username);
         setIsNew(props.isNew);
     }, []);
 
@@ -30,7 +32,11 @@ export const CreateOrUpdateBankAccount = (props) => {
             props.bankAccount.customer? setRadioValue('2'): setRadioValue('1');
         }
         setShow(true);
-        setBankAccount(props.bankAccount);
+        if(props.isAdmin) {
+            setBankAccount({...props.bankAccount});
+        } else {
+            setBankAccount({...props.bankAccount, username : username});
+        }
     };
 
     const handleClose = () => {

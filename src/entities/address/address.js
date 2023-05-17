@@ -9,7 +9,6 @@ import Pageable from "../../shared/layout/pageable";
 import Loading from "../../shared/layout/loading";
 import {NavLink} from "react-router-dom";
 import ViewArrowSort from "../../shared/layout/view-arrow-sort";
-import {CreateOrUpdateBankAccount} from "../bank-account/bank-account-create-or-update";
 
 const Address = () => {
 
@@ -19,26 +18,34 @@ const Address = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [isSort, setIsSort] = useState(true);
     const [keySort, setKeySort] = useState("id");
+    const [isAdmin, setIsAdmin] = useState(false);
 
     const {getEntities, createEntity, deleteEntity, updateEntity, loading} = useEntitiesService();
 
+    const user = JSON.parse(localStorage.getItem("user"));
+
     useEffect(() => {
-        getEntities('addresses', setAddress, currentPage).then(value => {
+        getEntities('addresses', setAddress, currentPage, user.username).then(value => {
             setPageable(value);
         });
+        user.authorities.map((authority) => {
+            if(authority === "ROLE_ADMIN") {
+                setIsAdmin(true);
+            }
+        })
     }, []);
 
     const createAddress = async (address) => {
-        await createEntity('addresses', address, setAddress, currentPage);
+        await createEntity('addresses', address, setAddress, currentPage, user.username);
     }
 
     const updateAddress = async (address, id) => {
-        await updateEntity('addresses', address, setAddress, id, currentPage);
+        await updateEntity('addresses', address, setAddress, id, currentPage, user.username);
     }
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('addresses', setAddress, currentPage).then(value => {
+        getEntities('addresses', setAddress, currentPage, user.username).then(value => {
             setPageable(value);
         });
     }
@@ -48,7 +55,7 @@ const Address = () => {
         setKeySort(sortParam);
         setIsSort(!isSort);
         isSort? sortDirect = "desc" : sortDirect = "asc";
-        getEntities('addresses', setAddress, currentPage, sortParam, sortDirect).then(value => {
+        getEntities('addresses', setAddress, currentPage, user.username, sortParam, sortDirect).then(value => {
             setPageable(value);
         });
     }
@@ -56,7 +63,7 @@ const Address = () => {
     const RenderAddress = () => {
         return(
             <Container fluid>
-                <CreateOrUpdateAddress createAddress={createAddress} isNew={true}/>
+                <CreateOrUpdateAddress createAddress={createAddress} isNew={true} isAdmin={isAdmin}/>
                 <Table striped bordered hover >
                     <thead>
                     <tr>
@@ -96,7 +103,7 @@ const Address = () => {
                                         <CreateOrUpdateAddress updateAddress={updateAddress} address={address} isNew={false}/>
                                     </Col>
                                     <Col style={{paddingRight: 10, paddingLeft: 3}}>
-                                        <Button onClick={() => deleteEntity('addresses', address.id, setAddress, currentPage)}
+                                        <Button onClick={() => deleteEntity('addresses', address.id, setAddress, currentPage, user.username)}
                                                 variant="danger"><Trash3Fill/></Button>
                                     </Col>
                                 </Row>

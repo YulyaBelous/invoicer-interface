@@ -1,24 +1,28 @@
 import {useEffect, useState} from "react";
 import {Container, Nav, Navbar, NavDropdown} from "react-bootstrap";
-import {CardList, CaretRightFill, FileTextFill, HouseDoorFill, PersonFillGear} from "react-bootstrap-icons";
+import {CardList, CaretRightFill, FileTextFill, HouseDoorFill, PersonCircle, PersonFillGear} from "react-bootstrap-icons";
 import {NavLink, useNavigate} from "react-router-dom";
 
 import RegisterForm from "../../../modules/accounts/register";
 import LoginForm from "../../../modules/accounts/login";
 import useUserService from "../../../services/user-service";
 
-const Header = () => {
+const Header = (props) => {
 
     const [isAuthorization, setIsAuthorization] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const navigation = useNavigate();
 
     const {logout} = useUserService();
 
-    const user = JSON.parse(localStorage.getItem("user"));
-
     useEffect(() => {
-        if (user && user.accessToken) {
+        if (props.user && props.user.accessToken) {
             setIsAuthorization(true);
+            props.user.authorities.map((authority) => {
+                if(authority === "ROLE_ADMIN") {
+                    setIsAdmin(true);
+                }
+            })
         }
     }, [])
 
@@ -45,8 +49,8 @@ const Header = () => {
                         <NavDropdown.Item as={NavLink} to="/bank-account"> <CaretRightFill color="royalblue"/> Bank Account</NavDropdown.Item>
                         <NavDropdown.Item as={NavLink} to="/address"> <CaretRightFill color="royalblue"/> Address</NavDropdown.Item>
                     </NavDropdown> : null}
-                    <NavDropdown title={<span> <PersonFillGear size={20}/> Administration</span>}></NavDropdown>
-                    <NavDropdown title={<span> <CardList size={20}/> Account</span>} >
+                    {isAdmin? <NavDropdown title={<span> <PersonFillGear size={20}/> Administration</span>}></NavDropdown> : null}
+                    <NavDropdown title={<span> <PersonCircle size={20}/> Account</span>} >
                         {!isAuthorization? <RegisterForm/> : null}
                         {!isAuthorization? <LoginForm handleLogIn={handleLogIn}/> : null}
                         {isAuthorization? <NavDropdown.Item onClick={handleLogOut}> <CaretRightFill color="royalblue"/> Log out</NavDropdown.Item> : null}

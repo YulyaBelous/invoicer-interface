@@ -1,6 +1,6 @@
 import {Button, Form, Modal, NavDropdown} from "react-bootstrap";
 import React, {useState} from "react";
-import {CaretRightFill} from "react-bootstrap-icons";
+import {CaretRightFill, PersonCircle} from "react-bootstrap-icons";
 import useUserService from "../../services/user-service";
 
 const LoginForm = (props) => {
@@ -34,6 +34,7 @@ const LoginForm = (props) => {
                     <Modal.Title>Log in</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    <div ><PersonCircle className="d-block mx-auto" size={100} style={{color: "gray"}}/></div>
                     <Form onSubmit={e => handleSave(e)}>
                             <Form.Group className="mb-3">
                             <Form.Label>Username</Form.Label>
@@ -43,9 +44,9 @@ const LoginForm = (props) => {
                             <Form.Label>Password</Form.Label>
                             <Form.Control name="password" type="password" placeholder="Password"/>
                         </Form.Group>
-                        <Button className="d-block mx-auto" type="submit" variant="primary" >
+                        <div className="d-grid gap-2"> <Button type="submit" variant="primary" >
                             Log in
-                        </Button>
+                        </Button> </div>
                     </Form>
                 </Modal.Body>
             </Modal>

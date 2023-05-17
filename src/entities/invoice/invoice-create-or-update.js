@@ -24,11 +24,13 @@ export const CreateOrUpdateInvoice = (props) => {
     const {getEntities} = useEntitiesService();
     const {validation} = Validation();
 
+    const username = JSON.parse(localStorage.getItem("user")).username;
+
     useEffect(() => {
-        getEntities('suppliers', setSuppliers);
-        getEntities('customers', setCustomers);
-        getEntities('addresses', setAddresses);
-        getEntities('bank-accounts', setBankAccounts);
+        getEntities('suppliers', setSuppliers, 0, username);
+        getEntities('customers', setCustomers, 0, username);
+        getEntities('addresses', setAddresses, 0, username);
+        getEntities('bank-accounts', setBankAccounts, 0, username);
         setIsNew(props.isNew);
     }, []);
 
@@ -36,7 +38,11 @@ export const CreateOrUpdateInvoice = (props) => {
         setShow(true);
         props.invoice?.supplier? changeSuppOrCus(null, suppliers, "supplier", props.invoice?.supplier) : changeSuppOrCus();
         props.invoice?.customer? changeSuppOrCus(null, customers, "customer", props.invoice?.customer) : changeSuppOrCus();
-        setInvoice({...props.invoice});
+        if(props.isAdmin) {
+            setInvoice({...props.invoice});
+        } else {
+            setInvoice({...props.invoice, username : username});
+        }
     };
 
     const handleClose = () => {

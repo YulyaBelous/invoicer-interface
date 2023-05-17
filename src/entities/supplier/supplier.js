@@ -22,29 +22,37 @@ const Supplier = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [isSort, setIsSort] = useState(true);
     const [keySort, setKeySort] = useState("id");
+    const [isAdmin, setIsAdmin] = useState(false);
 
     const {getEntities, createEntity, deleteEntity, updateEntity, loading} = useEntitiesService();
 
+    const user = JSON.parse(localStorage.getItem("user"));
+
     useEffect(() => {
-        getEntities('suppliers', setSuppliers, currentPage).then(value => {
+        getEntities('suppliers', setSuppliers, currentPage, user.username).then(value => {
             setPageable(value);
         });
-        getEntities('invoices', setInvoices);
-        getEntities('addresses', setAddress);
-        getEntities('bank-accounts', setBankAccounts);
+        getEntities('invoices', setInvoices, currentPage, user.username);
+        getEntities('addresses', setAddress, currentPage, user.username);
+        getEntities('bank-accounts', setBankAccounts, currentPage, user.username);
+        user.authorities.map((authority) => {
+            if(authority === "ROLE_ADMIN") {
+                setIsAdmin(true);
+            }
+        })
     }, []);
 
     const createSupplier = async (supplier, currentPage) => {
-        await createEntity('suppliers', supplier, setSuppliers);
+        await createEntity('suppliers', supplier, setSuppliers, currentPage, user.username);
     }
 
     const updateSupplier = async (supplier, id, currentPage) => {
-        await updateEntity('suppliers', supplier, setSuppliers, id);
+        await updateEntity('suppliers', supplier, setSuppliers, id, currentPage, user.username);
     }
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('suppliers', setSuppliers, currentPage).then(value => {
+        getEntities('suppliers', setSuppliers, currentPage, user.username).then(value => {
             setPageable(value);
         });
     }
@@ -54,7 +62,7 @@ const Supplier = () => {
         setKeySort(sortParam);
         setIsSort(!isSort);
         isSort? sortDirect = "desc" : sortDirect = "asc";
-        getEntities('suppliers', setSuppliers, currentPage, sortParam, sortDirect).then(value => {
+        getEntities('suppliers', setSuppliers, currentPage, user.username, sortParam, sortDirect).then(value => {
             setPageable(value);
         });
     }
@@ -78,7 +86,7 @@ const Supplier = () => {
     const RenderSupplier = () => {
         return(
             <Container fluid>
-                <CreateOrUpdateSupplier createSupplier={createSupplier} isNew={true}/>
+                <CreateOrUpdateSupplier createSupplier={createSupplier} isNew={true} isAdmin={isAdmin}/>
                 <Table striped bordered hover >
                     <thead>
                     <tr>
@@ -111,7 +119,7 @@ const Supplier = () => {
                                     </Col>
                                     <Col style={{paddingRight: 10, paddingLeft: 3}}>
                                         <Button
-                                            onClick={() => deleteEntity('suppliers', supplier.id, setSuppliers, currentPage)}
+                                            onClick={() => deleteEntity('suppliers', supplier.id, setSuppliers, currentPage, user.username)}
                                             variant="danger"><Trash3Fill/></Button>
                                     </Col>
                                 </Row>

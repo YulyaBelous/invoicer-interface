@@ -7,13 +7,19 @@ const CreateOrUpdateSupplier = (props) => {
     const [show, setShow] = useState(false);
     const [isNew, setIsNew] = useState(true);
 
+    const username = JSON.parse(localStorage.getItem("user")).username;
+
     useEffect(() => {
         setIsNew(props.isNew);
     }, [])
 
     const handleClickOpen = () => {
         setShow(true);
-        setSupplier(props.supplier);
+        if(props.isAdmin) {
+            setSupplier({...props.supplier});
+        } else {
+            setSupplier({...props.supplier, username : username});
+        }
     };
 
     const handleClose = () => {

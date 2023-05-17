@@ -20,26 +20,34 @@ const Invoice = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [isSort, setIsSort] = useState(true);
     const [keySort, setKeySort] = useState("id");
+    const [isAdmin, setIsAdmin] = useState(false);
 
     const {getEntities, createEntity, deleteEntity, updateEntity, reportEntity, loading} = useEntitiesService();
 
+    const user = JSON.parse(localStorage.getItem("user"));
+
     useEffect( () => {
-         getEntities('invoices', setInvoices, currentPage).then(value => {
+         getEntities('invoices', setInvoices, currentPage, user.username).then(value => {
              setPageable(value);
          });
+        user.authorities.map((authority) => {
+            if(authority === "ROLE_ADMIN") {
+                setIsAdmin(true);
+            }
+        })
     }, []);
 
     const createInvoice = async (invoice) => {
-         await createEntity('invoices', invoice, setInvoices, currentPage);
+         await createEntity('invoices', invoice, setInvoices, currentPage, user.username);
     }
 
     const updateInvoice = async (invoice, id) => {
-        await updateEntity('invoices', invoice, setInvoices, id, currentPage);
+        await updateEntity('invoices', invoice, setInvoices, id, currentPage, user.username);
     }
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('invoices', setInvoices, curPage).then(value => {
+        getEntities('invoices', setInvoices, curPage, user.username).then(value => {
             setPageable(value);
         });
     }
@@ -49,7 +57,7 @@ const Invoice = () => {
         setKeySort(sortParam);
         setIsSort(!isSort);
         isSort? sortDirect = "desc" : sortDirect = "asc";
-        getEntities('invoices', setInvoices, currentPage, sortParam, sortDirect).then(value => {
+        getEntities('invoices', setInvoices, currentPage, user.username, sortParam, sortDirect).then(value => {
             setPageable(value);
         });
     }
@@ -61,7 +69,7 @@ const Invoice = () => {
     const RenderInvoice = () => {
             return (
                 <Container fluid>
-                    <CreateOrUpdateInvoice createInvoice={createInvoice} isNew={true}/>
+                    <CreateOrUpdateInvoice createInvoice={createInvoice} isNew={true} isAdmin={isAdmin}/>
                     <Table striped bordered hover >
                         <thead>
                         <tr>
@@ -98,7 +106,7 @@ const Invoice = () => {
                                             <Button onClick={() => report('invoices', invoice.id)} variant="secondary"><FiletypePdf/></Button>
                                         </Col>
                                         <Col style={{paddingRight: 10, paddingLeft: 3}}>
-                                            <Button onClick={() => deleteEntity('invoices', invoice.id, setInvoices, currentPage)}
+                                            <Button onClick={() => deleteEntity('invoices', invoice.id, setInvoices, currentPage, user.username)}
                                                     variant="danger"><Trash3Fill/></Button>
                                         </Col>
                                     </Row>

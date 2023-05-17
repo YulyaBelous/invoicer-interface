@@ -7,13 +7,19 @@ export const CreateOrUpdateCustomer = (props) => {
     const [show, setShow] = useState(false);
     const [isNew, setIsNew] = useState(true);
 
+    const username = JSON.parse(localStorage.getItem("user")).username;
+
     useEffect(() => {
         setIsNew(props.isNew);
     }, [])
 
     const handleClickOpen = () => {
         setShow(true);
-        setCustomer(props.customer);
+        if(props.isAdmin) {
+            setCustomer({...props.customer});
+        } else {
+            setCustomer({...props.customer, username : username});
+        }
     };
 
     const handleClose = () => {

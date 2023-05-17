@@ -17,9 +17,11 @@ export const CreateOrUpdateAddress = (props) => {
         { name: 'Customer', value: '2' }
     ];
 
+    const username = JSON.parse(localStorage.getItem("user")).username;
+
     useEffect(() => {
-        getEntities('suppliers', setSuppliers);
-        getEntities('customers', setCustomers);
+        getEntities('suppliers', setSuppliers, 0, username);
+        getEntities('customers', setCustomers, 0, username);
         setIsNew(props.isNew);
     }, []);
 
@@ -28,7 +30,11 @@ export const CreateOrUpdateAddress = (props) => {
             props.address.customer? setRadioValue('2'): setRadioValue('1');
         }
         setShow(true);
-        setAddress(props.address);
+        if(props.isAdmin) {
+            setAddress({...props.address});
+        } else {
+            setAddress({...props.address, username : username});
+        }
     };
 
     const handleClose = () => {
