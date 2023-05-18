@@ -1,5 +1,6 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 
+import {NavLink} from "react-router-dom";
 import {Button, Container, Table, Card, Col, Row} from "react-bootstrap";
 import {Trash3Fill} from "react-bootstrap-icons";
 
@@ -7,8 +8,8 @@ import useEntitiesService from "../../services/entities-service";
 import {CreateOrUpdateAddress} from "./address-create-or-update";
 import Pageable from "../../shared/layout/pageable";
 import Loading from "../../shared/layout/loading";
-import {NavLink} from "react-router-dom";
-import ViewArrowSort from "../../shared/layout/view-arrow-sort";
+import ViewArrowSort from "../../shared/layout/view/view-arrow-sort";
+import AuthContext from "../../context/auth-context";
 
 const Address = () => {
 
@@ -18,21 +19,15 @@ const Address = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [isSort, setIsSort] = useState(true);
     const [keySort, setKeySort] = useState("id");
-    const [isAdmin, setIsAdmin] = useState(false);
 
     const {getEntities, createEntity, deleteEntity, updateEntity, loading} = useEntitiesService();
 
-    const user = JSON.parse(localStorage.getItem("user"));
+    const {user} = useContext(AuthContext);
 
     useEffect(() => {
         getEntities('addresses', setAddress, currentPage, user.username).then(value => {
             setPageable(value);
         });
-        user.authorities.map((authority) => {
-            if(authority === "ROLE_ADMIN") {
-                setIsAdmin(true);
-            }
-        })
     }, []);
 
     const createAddress = async (address) => {
@@ -63,20 +58,57 @@ const Address = () => {
     const RenderAddress = () => {
         return(
             <Container fluid>
-                <CreateOrUpdateAddress createAddress={createAddress} isNew={true} isAdmin={isAdmin}/>
+                <CreateOrUpdateAddress createAddress={createAddress} isNew={true}/>
                 <Table striped bordered hover >
                     <thead>
                     <tr>
-                        <th>Id <NavLink onClick={() => sort("id")}> <ViewArrowSort sortParam="id" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Country <NavLink onClick={() => sort("country")}> <ViewArrowSort sortParam="country" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Province <NavLink onClick={() => sort("province")}> <ViewArrowSort sortParam="province" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Postcode <NavLink onClick={() => sort("postCode")}> <ViewArrowSort sortParam="postCode" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>City <NavLink onClick={() => sort("city")}> <ViewArrowSort sortParam="city" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Street line 1 <NavLink onClick={() => sort("streetLine1")}> <ViewArrowSort sortParam="streetLine1" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Street line 2 <NavLink onClick={() => sort("streetLine2")}> <ViewArrowSort sortParam="streetLine2" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Email <NavLink onClick={() => sort("email")}> <ViewArrowSort sortParam="email" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Phone 1 <NavLink onClick={() => sort("phone1")}> <ViewArrowSort sortParam="phone1" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Phone 2 <NavLink onClick={() => sort("phone2")}> <ViewArrowSort sortParam="phone2" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                        <th>Id
+                            <NavLink onClick={() => sort("id")}>
+                                <ViewArrowSort sortParam="id" keySort={keySort} isSort={isSort}/>
+                            </NavLink>
+                        </th>
+                        <th>Country
+                            <NavLink onClick={() => sort("country")}>
+                                <ViewArrowSort sortParam="country" keySort={keySort} isSort={isSort}/>
+                            </NavLink>
+                        </th>
+                        <th>Province
+                            <NavLink onClick={() => sort("province")}>
+                                <ViewArrowSort sortParam="province" keySort={keySort} isSort={isSort}/>
+                            </NavLink>
+                        </th>
+                        <th>Postcode
+                            <NavLink onClick={() => sort("postCode")}>
+                                <ViewArrowSort sortParam="postCode" keySort={keySort} isSort={isSort}/>
+                            </NavLink>
+                        </th>
+                        <th>City
+                            <NavLink onClick={() => sort("city")}>
+                                <ViewArrowSort sortParam="city" keySort={keySort} isSort={isSort}/>
+                            </NavLink>
+                        </th>
+                        <th>Street line 1
+                            <NavLink onClick={() => sort("streetLine1")}>
+                                <ViewArrowSort sortParam="streetLine1" keySort={keySort} isSort={isSort}/>
+                            </NavLink>
+                        </th>
+                        <th>Street line 2
+                            <NavLink onClick={() => sort("streetLine2")}>
+                                <ViewArrowSort sortParam="streetLine2" keySort={keySort} isSort={isSort}/>
+                            </NavLink>
+                        </th>
+                        <th>Email
+                            <NavLink onClick={() => sort("email")}>
+                                <ViewArrowSort sortParam="email" keySort={keySort} isSort={isSort}/>
+                            </NavLink></th>
+                        <th>Phone 1
+                            <NavLink onClick={() => sort("phone1")}>
+                                <ViewArrowSort sortParam="phone1" keySort={keySort} isSort={isSort}/>
+                            </NavLink></th>
+                        <th>Phone 2
+                            <NavLink onClick={() => sort("phone2")}>
+                                <ViewArrowSort sortParam="phone2" keySort={keySort} isSort={isSort}/>
+                            </NavLink></th>
                        {/* <th>Owner </th>*/}
                         <th>Actions</th>
                     </tr>

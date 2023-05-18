@@ -1,10 +1,11 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 
 import {Button, Form, Modal} from "react-bootstrap";
 import {PencilFill, Plus} from "react-bootstrap-icons";
 
 import useEntitiesService from "../../services/entities-service";
 import Validation from "../validation";
+import AuthContext from "../../context/auth-context";
 
 export const CreateOrUpdateInvoice = (props) => {
 
@@ -19,18 +20,18 @@ export const CreateOrUpdateInvoice = (props) => {
 
     const [show, setShow] = useState(false);
     const [isNew, setIsNew] = useState(true);
-    const [errors, setErrors] = useState({})
+    const [errors, setErrors] = useState({});
 
     const {getEntities} = useEntitiesService();
     const {validation} = Validation();
 
-    const username = JSON.parse(localStorage.getItem("user")).username;
+    const {user, isAdmin} = useContext(AuthContext);
 
     useEffect(() => {
-        getEntities('suppliers', setSuppliers, 0, username);
-        getEntities('customers', setCustomers, 0, username);
-        getEntities('addresses', setAddresses, 0, username);
-        getEntities('bank-accounts', setBankAccounts, 0, username);
+        getEntities('suppliers', setSuppliers, 0, user.username);
+        getEntities('customers', setCustomers, 0, user.username);
+        getEntities('addresses', setAddresses, 0, user.username);
+        getEntities('bank-accounts', setBankAccounts, 0, user.username);
         setIsNew(props.isNew);
     }, []);
 
@@ -38,10 +39,10 @@ export const CreateOrUpdateInvoice = (props) => {
         setShow(true);
         props.invoice?.supplier? changeSuppOrCus(null, suppliers, "supplier", props.invoice?.supplier) : changeSuppOrCus();
         props.invoice?.customer? changeSuppOrCus(null, customers, "customer", props.invoice?.customer) : changeSuppOrCus();
-        if(props.isAdmin) {
+        if(isAdmin) {
             setInvoice({...props.invoice});
         } else {
-            setInvoice({...props.invoice, username : username});
+            setInvoice({...props.invoice, username : user.username});
         }
     };
 
@@ -114,7 +115,7 @@ export const CreateOrUpdateInvoice = (props) => {
         return (
             <Form.Group className="mb-3">
                 <Form.Label >{title}</Form.Label>
-                <Form.Select disabled={isSupplier? disabledSupplier : disabledCustomer} onChange={(e) => handleChange(e, entities)}  isInvalid={!!valid} name={entityName}>
+                <Form.Select disabled={isSupplier? disabledSupplier : disabledCustomer} onChange={(e) => handleChange(e, entities)} isInvalid={!!valid} name={entityName}>
                     <option>{ entity? (isAddress? `${entity?.country}, ${entity?.city}, ${entity?.postCode}, ${entity?.streetLine1}` : entity?.bankName) : (`Select ${title}`)}</option>
                     {
                         isAddress? (addressFiltered ? addressFiltered.map(address =>
@@ -141,7 +142,7 @@ export const CreateOrUpdateInvoice = (props) => {
                     <Modal.Title>{isNew? 'Create a new Invoice' : `Edit Invoice ${props.invoice?.id}`}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form  onSubmit={e => handleSave(e)}>
+                    <Form onSubmit={e => handleSave(e)}>
                         <Form.Group className="mb-3">
                             <Form.Label >Number</Form.Label>
                             <Form.Control

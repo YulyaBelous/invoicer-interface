@@ -1,27 +1,35 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Button, ButtonGroup, Form, Modal, ToggleButton} from "react-bootstrap";
 import useEntitiesService from "../../services/entities-service";
 import {PencilFill, Plus} from "react-bootstrap-icons";
+import AuthContext from "../../context/auth-context";
+import Validation from "../validation";
+import ViewSupplierOrCustomer from "../../shared/layout/view/view-supplier-or-customer";
 
 export const CreateOrUpdateAddress = (props) => {
+
     const [address, setAddress] = useState();
     const [suppliers, setSuppliers] = useState([]);
     const [customers, setCustomers] = useState([]);
+
     const [radioValue, setRadioValue] = useState('1');
     const [show, setShow] = useState(false);
     const [isNew, setIsNew] = useState(true);
+    const [errors, setErrors] = useState({});
+
     const {getEntities} = useEntitiesService();
+    const {validation} = Validation();
+
+    const {user, isAdmin} = useContext(AuthContext);
 
     const radios = [
         { name: 'Supplier', value: '1' },
         { name: 'Customer', value: '2' }
     ];
 
-    const username = JSON.parse(localStorage.getItem("user")).username;
-
     useEffect(() => {
-        getEntities('suppliers', setSuppliers, 0, username);
-        getEntities('customers', setCustomers, 0, username);
+        getEntities('suppliers', setSuppliers, 0, user.username);
+        getEntities('customers', setCustomers, 0, user.username);
         setIsNew(props.isNew);
     }, []);
 
@@ -30,10 +38,10 @@ export const CreateOrUpdateAddress = (props) => {
             props.address.customer? setRadioValue('2'): setRadioValue('1');
         }
         setShow(true);
-        if(props.isAdmin) {
+        if(isAdmin) {
             setAddress({...props.address});
         } else {
-            setAddress({...props.address, username : username});
+            setAddress({...props.address, username : user.username});
         }
     };
 
@@ -42,45 +50,36 @@ export const CreateOrUpdateAddress = (props) => {
     };
 
     const handleChange = (event) => {
-        if(event.target.name === 'supplier') {
+        if(event.target.name === "supplier" || event.target.name === "customer") {
             setAddress({
                 ...address,
-                customer: null,
-                supplier: suppliers.find(it => it.id.toString() === event.target.value.toString())
+                supplier: event.target.name === "supplier"? suppliers.find(it => it.id.toString() === event.target.value.toString()) : null,
+                customer: event.target.name === "customer"? customers.find(it => it.id.toString() === event.target.value.toString()) : null,
             });
         }
-        else if(event.target.name === 'customer') {
-            setAddress({
+        if ( !!errors[event.target.name] ) setErrors({...errors, [event.target.name]: null})
+    }
+
+    const handleSave = (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const values = Object.fromEntries(formData.entries());
+        const newErrors = validation(values);
+        if ( Object.keys(newErrors).length > 0 ) {
+            setErrors(newErrors)
+        } else {
+            let idSupplier = null, idCustomer = null;
+            address?.supplier? (address?.supplier?.id? idSupplier = address?.supplier?.id : idSupplier = address?.supplier) :
+                (address?.customer?.id? idCustomer = address?.customer?.id : idCustomer = address?.customer)
+            const addressEntity = {
                 ...address,
-                supplier: null,
-                customer: customers.find(it => it.id.toString() === event.target.value.toString())
-            });
+                ...values,
+                supplier: suppliers.find(it => it.id.toString() === idSupplier?.toString()),
+                customer: customers.find(it => it.id.toString() === idCustomer?.toString())
+            }
+            isNew?  props.createAddress(addressEntity) : props.updateAddress(addressEntity, addressEntity.id);
+            handleClose();
         }
-        else {
-            setAddress({...address, [event.target.name]: event.target.value});
-        }
-    }
-
-    const handleSave = () => {
-        isNew?  props.createAddress(address) : props.updateAddress(address, address.id);
-        handleClose();
-    }
-
-    const viewSupplierOrCustomer = (title, entityName, entities, isSupplier) => {
-        return (
-            <Form.Group className="mb-3">
-                <Form.Label className="mt-3" >{title}</Form.Label>
-                <Form.Select className="mb-3" name={entityName}>
-                    <option>{isNew? (`Select ${title}`)
-                        : (isSupplier? props.address.supplier?.name: props.address.customer?.name)}</option>
-                    {
-                        entities ? entities.map(entity =>
-                            <option value={entity.id} key={entity.id}>{entity.name}</option>
-                        ) : null
-                    }
-                </Form.Select>
-            </Form.Group>
-        );
     }
 
     return (
@@ -92,42 +91,87 @@ export const CreateOrUpdateAddress = (props) => {
                     <Modal.Title>{isNew? 'Create a new Address' : `Edit Address ${props.address?.id}`}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onChange={handleChange} >
+                    <Form onChange={handleChange} onSubmit={e => handleSave(e)}>
                         <Form.Group className="mb-3">
                             <Form.Label >Country</Form.Label>
-                            <Form.Control defaultValue={props.address?.country} name="country"/>
+                            <Form.Control isInvalid={!!errors.country}
+                                          defaultValue={props.address?.country}
+                                          name="country"/>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.country}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label >Province</Form.Label>
-                            <Form.Control defaultValue={props.address?.province} name="province"/>
+                            <Form.Control isInvalid={!!errors.province}
+                                          defaultValue={props.address?.province}
+                                          name="province"/>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.province}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label >Post code</Form.Label>
-                            <Form.Control defaultValue={props.address?.postCode} name="postCode"/>
+                            <Form.Control isInvalid={!!errors.postCode}
+                                          defaultValue={props.address?.postCode}
+                                          name="postCode"/>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.postCode}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label >City</Form.Label>
-                            <Form.Control defaultValue={props.address?.city} name="city"/>
+                            <Form.Control isInvalid={!!errors.city}
+                                          defaultValue={props.address?.city}
+                                          name="city"/>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.city}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label >Street line 1</Form.Label>
-                            <Form.Control defaultValue={props.address?.streetLine1} name="streetLine1"/>
+                            <Form.Control isInvalid={!!errors.streetLine1}
+                                          defaultValue={props.address?.streetLine1}
+                                          name="streetLine1"/>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.streetLine1}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label >Street line 2</Form.Label>
-                            <Form.Control defaultValue={props.address?.streetLine2} name="streetLine2"/>
+                            <Form.Control isInvalid={!!errors.streetLine2}
+                                          defaultValue={props.address?.streetLine2}
+                                          name="streetLine2"/>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.streetLine2}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label >Email</Form.Label>
-                            <Form.Control defaultValue={props.address?.email} name="email"/>
+                            <Form.Control isInvalid={!!errors.email}
+                                          defaultValue={props.address?.email}
+                                          name="email"/>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.email}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label >Phone 1</Form.Label>
-                            <Form.Control defaultValue={props.address?.phone1} name="phone1"/>
+                            <Form.Control isInvalid={!!errors.phone1}
+                                          defaultValue={props.address?.phone1}
+                                          name="phone1"/>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.phone1}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label >Phone 2</Form.Label>
-                            <Form.Control defaultValue={props.address?.phone2} name="phone2"/>
+                            <Form.Control isInvalid={!!errors.phone2}
+                                          defaultValue={props.address?.phone2}
+                                          name="phone2"/>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.phone2}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <ButtonGroup>
                             {radios.map((radio, i) => (
@@ -145,9 +189,9 @@ export const CreateOrUpdateAddress = (props) => {
                                 </ToggleButton>
                             ))}
                         </ButtonGroup>
-                        {radioValue === '1' ? viewSupplierOrCustomer("Supplier", "supplier", suppliers, true)
-                            : viewSupplierOrCustomer("Customer", "customer", customers, false)}
-                        <Button className="d-block mx-auto"  onClick={handleSave} variant="primary" >
+                        {radioValue === '1' ? <ViewSupplierOrCustomer title="Supplier" entities={suppliers} entity={props.address} valid={errors.supplier} isNew={isNew}/>
+                            : <ViewSupplierOrCustomer title="Customer" entities={customers} entity={props.address} valid={errors.customer} isNew={isNew}/>}
+                        <Button className="d-block mx-auto" type="submit"  variant="primary" >
                             Save
                         </Button>
                     </Form>

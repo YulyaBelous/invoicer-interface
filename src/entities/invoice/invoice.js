@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useContext} from "react";
 
 import {NavLink} from "react-router-dom";
 import {Button, Container, Table, Card, Row, Col} from "react-bootstrap";
@@ -10,7 +10,8 @@ import ViewSupplier from "../supplier/supplier-view";
 import ViewCustomer from "../customer/customer-view";
 import Pageable from "../../shared/layout/pageable";
 import Loading from "../../shared/layout/loading";
-import ViewArrowSort from "../../shared/layout/view-arrow-sort";
+import ViewArrowSort from "../../shared/layout/view/view-arrow-sort";
+import AuthContext from "../../context/auth-context";
 
 const Invoice = () => {
 
@@ -20,21 +21,15 @@ const Invoice = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [isSort, setIsSort] = useState(true);
     const [keySort, setKeySort] = useState("id");
-    const [isAdmin, setIsAdmin] = useState(false);
 
     const {getEntities, createEntity, deleteEntity, updateEntity, reportEntity, loading} = useEntitiesService();
 
-    const user = JSON.parse(localStorage.getItem("user"));
+    const {user} = useContext(AuthContext);
 
     useEffect( () => {
          getEntities('invoices', setInvoices, currentPage, user.username).then(value => {
              setPageable(value);
          });
-        user.authorities.map((authority) => {
-            if(authority === "ROLE_ADMIN") {
-                setIsAdmin(true);
-            }
-        })
     }, []);
 
     const createInvoice = async (invoice) => {
@@ -69,7 +64,7 @@ const Invoice = () => {
     const RenderInvoice = () => {
             return (
                 <Container fluid>
-                    <CreateOrUpdateInvoice createInvoice={createInvoice} isNew={true} isAdmin={isAdmin}/>
+                    <CreateOrUpdateInvoice createInvoice={createInvoice} isNew={true} />
                     <Table striped bordered hover >
                         <thead>
                         <tr>

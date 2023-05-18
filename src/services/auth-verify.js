@@ -1,5 +1,7 @@
-import {useEffect} from "react";
-import {withRouter} from "./with-router";
+import {useContext, useEffect, useState} from "react";
+import {useLocation, useNavigate} from "react-router-dom";
+import AuthContext from "../context/auth-context";
+import {Button, Container, Modal} from "react-bootstrap";
 
 const parseJwt = (token) => {
     try {
@@ -9,25 +11,46 @@ const parseJwt = (token) => {
     }
 };
 
-const AuthVerify = (props) => {
+const AuthVerify = () => {
 
-    let location = props.router.location;
-    let navigation = props.router.navigate;
+    const {user, logOut} = useContext(AuthContext);
+    const [open, setOpen] = useState(false);
+
+    let location = useLocation();
+    const navigation = useNavigate();
 
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("user"));
-
         if (user) {
             const decodedJwt = parseJwt(user.accessToken);
-            console.log((((decodedJwt.exp * 1000 - 76269999 )) - Date.now())/1000)
-            if ((decodedJwt.exp * 1000 - 76269999) < Date.now()) {
-                props.logOut();
+            if ((decodedJwt.exp * 1000) < Date.now()) {
+                logOut();
+                setOpen(true);
                 navigation("/");
             }
         }
     }, [location]);
 
-    return <div></div>;
+    const handleClose = () => {
+        setOpen(false);
+    }
+
+    return (
+        <Container className="mt-4">
+            <Modal show={open} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Session has expired</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Your session has expired. Log in to your account to access the functionality of the application</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={handleClose}>
+                        Ok
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </Container>
+    )
 }
 
-export default withRouter(AuthVerify);
+export default AuthVerify;

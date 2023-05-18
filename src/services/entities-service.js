@@ -18,7 +18,9 @@ const useEntitiesService = () => {
     }
 
     const updateEntity = async (nameEntity, entity, setState, id, offset = 0, username = "user") => {
-        await request(`${_apiBase}${nameEntity}/${id}`, 'put', entity);
+        console.log("update")
+        const res = await request(`${_apiBase}${nameEntity}/${id}`, 'put', entity);
+        console.log(res)
         getEntities(nameEntity, setState, offset, username);
     }
 

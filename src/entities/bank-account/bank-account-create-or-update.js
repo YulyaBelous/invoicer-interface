@@ -1,29 +1,37 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {PencilFill, Plus} from "react-bootstrap-icons";
 import {Button, ButtonGroup, Form, Modal, ToggleButton} from "react-bootstrap";
 import useEntitiesService from "../../services/entities-service";
+import AuthContext from "../../context/auth-context";
+import Validation from "../validation";
+import ViewSupplierOrCustomer from "../../shared/layout/view/view-supplier-or-customer";
 
 export const CreateOrUpdateBankAccount = (props) => {
+
     const [bankAccount, setBankAccount] = useState();
     const [addresses, setAddress] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
     const [customers, setCustomers] = useState([]);
+
     const [radioValue, setRadioValue] = useState('1');
     const [show, setShow] = useState(false);
     const [isNew, setIsNew] = useState(true);
+    const [errors, setErrors] = useState({});
+
     const {getEntities} = useEntitiesService();
+    const {validation} = Validation();
+
+    const {user, isAdmin} = useContext(AuthContext);
 
     const radios = [
         { name: 'Supplier', value: '1' },
         { name: 'Customer', value: '2' }
     ];
 
-    const username = JSON.parse(localStorage.getItem("user")).username;
-
     useEffect(() => {
-        getEntities('addresses', setAddress, 0, username);
-        getEntities('suppliers', setSuppliers, 0, username);
-        getEntities('customers', setCustomers, 0, username);
+        getEntities('addresses', setAddress, 0, user.username);
+        getEntities('suppliers', setSuppliers, 0, user.username);
+        getEntities('customers', setCustomers, 0, user.username);
         setIsNew(props.isNew);
     }, []);
 
@@ -32,10 +40,10 @@ export const CreateOrUpdateBankAccount = (props) => {
             props.bankAccount.customer? setRadioValue('2'): setRadioValue('1');
         }
         setShow(true);
-        if(props.isAdmin) {
+        if(isAdmin) {
             setBankAccount({...props.bankAccount});
         } else {
-            setBankAccount({...props.bankAccount, username : username});
+            setBankAccount({...props.bankAccount, username : user.username});
         }
     };
 
@@ -44,50 +52,43 @@ export const CreateOrUpdateBankAccount = (props) => {
     };
 
     const handleChange = (event) => {
-        if(event.target.name === 'supplier') {
+        if(event.target.name === "supplier" || event.target.name === "customer") {
             setBankAccount({
                 ...bankAccount,
-                supplier: suppliers.find(it => it.id.toString() === event.target.value.toString())
+                supplier: event.target.name === "supplier"? suppliers.find(it => it.id.toString() === event.target.value.toString()) : null,
+                customer: event.target.name === "customer"? customers.find(it => it.id.toString() === event.target.value.toString()) : null,
             });
         }
-        else if(event.target.name === 'customer') {
-            setBankAccount({
-                ...bankAccount,
-                customer: customers.find(it => it.id.toString() === event.target.value.toString())
-            });
-        }
-        else if(event.target.name === 'address') {
+        if(event.target.name === 'address') {
             setBankAccount({
                 ...bankAccount,
                 address: addresses.find(it => it.id.toString() === event.target.value.toString())
             });
         }
-        else {
-            setBankAccount({...bankAccount, [event.target.name]: event.target.value});
+        if ( !!errors[event.target.name] ) setErrors({...errors, [event.target.name]: null})
+    }
+
+    const handleSave = (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const values = Object.fromEntries(formData.entries());
+        const newErrors = validation(values);
+        if ( Object.keys(newErrors).length > 0 ) {
+            setErrors(newErrors)
+        } else {
+            let idSupplier = null, idCustomer = null;
+            bankAccount?.supplier? (bankAccount?.supplier?.id? idSupplier = bankAccount?.supplier?.id : idSupplier = bankAccount?.supplier) :
+                (bankAccount?.customer?.id? idCustomer = bankAccount?.customer?.id : idCustomer = bankAccount?.customer)
+            const bankAccountEntity = {
+                ...bankAccount,
+                ...values,
+                supplier: suppliers.find(it => it.id.toString() === idSupplier?.toString()),
+                customer: customers.find(it => it.id.toString() === idCustomer?.toString()),
+                address: addresses.find(it => it.id.toString() === bankAccount?.address?.id.toString())
+            }
+            isNew?  props.createBankAccount(bankAccountEntity) : props.updateBankAccount(bankAccountEntity, bankAccountEntity.id);
+            handleClose();
         }
-
-    }
-
-    const handleSave = () => {
-        isNew?  props.createBankAccount(bankAccount) : props.updateBankAccount(bankAccount, bankAccount.id);
-        handleClose();
-    }
-
-    const viewSupplierOrCustomer = (title, entityName, entities, isSupplier) => {
-        return (
-            <Form.Group className="mb-3">
-                <Form.Label className="mt-3" >{title}</Form.Label>
-                <Form.Select className="mb-3" name={entityName}>
-                    <option>{isNew? (`Select ${title}`)
-                        : (isSupplier? props.bankAccount.supplier?.name: props.bankAccount.customer?.name)}</option>
-                    {
-                        entities ? entities.map(entity =>
-                            <option value={entity.id} key={entity.id}>{entity.name}</option>
-                        ) : null
-                    }
-                </Form.Select>
-            </Form.Group>
-        );
     }
 
     return (
@@ -99,44 +100,70 @@ export const CreateOrUpdateBankAccount = (props) => {
                     <Modal.Title>{isNew? 'Create a new Bank Account' : `Edit Bank Account ${props.bankAccount?.id}`}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onChange={handleChange} >
+                    <Form onChange={handleChange} onSubmit={e => handleSave(e)}>
                         <Form.Group className="mb-3">
                             <Form.Label >Name</Form.Label>
-                            <Form.Control defaultValue={props.bankAccount?.name} name="name"/>
+                            <Form.Control isInvalid={!!errors.name} defaultValue={props.bankAccount?.name} name="name"/>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.name}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label >Account number</Form.Label>
-                            <Form.Control defaultValue={props.bankAccount?.accountNumber} name="accountNumber"/>
+                            <Form.Control isInvalid={!!errors.accountNumber} defaultValue={props.bankAccount?.accountNumber} name="accountNumber"/>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.accountNumber}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label >Bank name</Form.Label>
-                            <Form.Control defaultValue={props.bankAccount?.bankName} name="bankName"/>
+                            <Form.Control isInvalid={!!errors.bankName} defaultValue={props.bankAccount?.bankName} name="bankName"/>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.bankName}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label >Swift</Form.Label>
-                            <Form.Control defaultValue={props.bankAccount?.swift} name="swift"/>
+                            <Form.Control isInvalid={!!errors.swift} defaultValue={props.bankAccount?.swift} name="swift"/>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.swift}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label >Correspondent name</Form.Label>
-                            <Form.Control defaultValue={props.bankAccount?.correspondentName} name="correspondentName"/>
+                            <Form.Control isInvalid={!!errors.correspondentName} defaultValue={props.bankAccount?.correspondentName} name="correspondentName"/>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.correspondentName}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label >Correspondent address</Form.Label>
-                            <Form.Control defaultValue={props.bankAccount?.correspondentAddress} name="correspondentAddress"/>
+                            <Form.Control isInvalid={!!errors.correspondentAddress} defaultValue={props.bankAccount?.correspondentAddress} name="correspondentAddress"/>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.correspondentAddress}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label >Correspondent swift</Form.Label>
-                            <Form.Control defaultValue={props.bankAccount?.correspondentSwift} name="correspondentSwift"/>
+                            <Form.Control isInvalid={!!errors.correspondentSwift} defaultValue={props.bankAccount?.correspondentSwift} name="correspondentSwift"/>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.correspondentSwift}
+                            </Form.Control.Feedback>
                         </Form.Group>
-                        <Form.Label >Address</Form.Label>
-                        <Form.Select className="mb-3" name="address">
-                            <option>{props.bankAccount?.address? `${props.bankAccount.address.country}, ${props.bankAccount.address.city}, ${props.bankAccount.address.postCode}, ${props.bankAccount.address.streetLine1}` : 'Select Address'}</option>
-                            {
-                                addresses ? addresses.map(address =>
-                                    <option value={address.id} key={address.id}> {`${address.country}, ${address.city}, ${address.postCode}, ${address.streetLine1}`}</option>
-                                ) : null
-                            }
-                        </Form.Select>
+                        <Form.Group className="mb-3">
+                            <Form.Label >Address</Form.Label>
+                            <Form.Select isInvalid={!!errors.address} className="mb-3" name="address">
+                                <option>{props.bankAccount?.address? `${props.bankAccount.address.country}, ${props.bankAccount.address.city}, ${props.bankAccount.address.postCode}, ${props.bankAccount.address.streetLine1}` : 'Select Address'}</option>
+                                {
+                                    addresses ? addresses.map(address =>
+                                        <option value={address.id} key={address.id}> {`${address.country}, ${address.city}, ${address.postCode}, ${address.streetLine1}`}</option>
+                                    ) : null
+                                }
+                            </Form.Select>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.address}
+                            </Form.Control.Feedback>
+                        </Form.Group>
                         <ButtonGroup>
                             {radios.map((radio, i) => (
                                 <ToggleButton
@@ -153,9 +180,9 @@ export const CreateOrUpdateBankAccount = (props) => {
                                 </ToggleButton>
                             ))}
                         </ButtonGroup>
-                        {radioValue === '1' ? viewSupplierOrCustomer("Supplier", "supplier", suppliers, true)
-                            : viewSupplierOrCustomer("Customer", "customer", customers, false)}
-                        <Button className="d-block mx-auto"  onClick={handleSave} variant="primary" >
+                        {radioValue === '1' ? <ViewSupplierOrCustomer title="Supplier" entities={suppliers} entity={props.bankAccount} valid={errors.supplier} isNew={isNew}/>
+                            : <ViewSupplierOrCustomer title="Customer" entities={customers} entity={props.bankAccount} valid={errors.customer} isNew={isNew}/>}
+                        <Button className="d-block mx-auto" type="submit" variant="primary" >
                             Save
                         </Button>
                     </Form>

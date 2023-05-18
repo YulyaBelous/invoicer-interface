@@ -13,7 +13,7 @@ const Validation = () => {
                 if(value < 0) {
                     errors = {...errors, [key] : 'This field cannot be negative'};
                 }
-            } else if(value.includes("Select")) {
+            } else if(typeof(value) === "string" && value.includes("Select")) {
                 errors = {...errors, [key] : `Need to choose ${value.slice(7, value.length)}`};
             }
         }

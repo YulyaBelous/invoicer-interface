@@ -1,13 +1,16 @@
 import {Button, Form, Modal, NavDropdown} from "react-bootstrap";
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {CaretRightFill, PersonCircle} from "react-bootstrap-icons";
 import useUserService from "../../services/user-service";
+import AuthContext from "../../context/auth-context";
 
 const LoginForm = (props) => {
 
     const [show, setShow] = useState(false);
 
     const {login} = useUserService();
+
+    const {logIn} = useContext(AuthContext);
 
     const handleClickOpen = () => {
         setShow(true);
@@ -22,7 +25,8 @@ const LoginForm = (props) => {
         const formData = new FormData(e.target);
         const values = Object.fromEntries(formData.entries());
         const res = await login(values);
-        props.handleLogIn(true);
+        logIn();
+        /*props.handleLogIn(true);*/
         handleClose();
     }
 
