@@ -8,6 +8,7 @@ const useUserService = () => {
 
     const register = async (user) => {
        return await request(`${_apiBase}/registration`, 'post', user);
+
     }
 
     const login = async (user) => {

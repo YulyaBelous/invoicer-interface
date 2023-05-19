@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {Button, Form, Modal} from "react-bootstrap";
 import {PencilFill, Plus} from "react-bootstrap-icons";
-import useEntitiesService from "../../services/entities-service";
-import Validation from "../validation";
+import useEntitiesService from "../../../services/entities-service";
+import Validation from "../../../entities/validation";
 
 const CreateOrUpdateUsers = (props) => {
 

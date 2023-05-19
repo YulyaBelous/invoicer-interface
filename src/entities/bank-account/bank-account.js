@@ -42,7 +42,7 @@ const BankAccount = () => {
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('bank-accounts', setBankAccounts, currentPage, user.username).then(value => {
+        getEntities('bank-accounts', setBankAccounts, curPage, user.username).then(value => {
             setPageable(value);
         });
     }

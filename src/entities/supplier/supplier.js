@@ -47,7 +47,7 @@ const Supplier = () => {
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('suppliers', setSuppliers, currentPage, user.username).then(value => {
+        getEntities('suppliers', setSuppliers, curPage, user.username).then(value => {
             setPageable(value);
         });
     }

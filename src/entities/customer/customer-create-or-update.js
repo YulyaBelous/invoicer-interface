@@ -46,8 +46,8 @@ export const CreateOrUpdateCustomer = (props) => {
         if ( Object.keys(newErrors).length > 0 ) {
             setErrors(newErrors)
         } else {
-            const supplierEntity = {...customer, ...values}
-            isNew ? props.createCustomer(supplierEntity) : props.updateCustomer(supplierEntity, supplierEntity.id);
+            const customerEntity = {...customer, ...values}
+            isNew ? props.createCustomer(customerEntity) : props.updateCustomer(customerEntity, customerEntity.id);
             handleClose();
         }
     }

@@ -47,7 +47,7 @@ const Customer = () => {
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('customers', setCustomers, currentPage, user.username).then(value => {
+        getEntities('customers', setCustomers, curPage, user.username).then(value => {
             setPageable(value);
         });
     }

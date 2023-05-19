@@ -40,7 +40,7 @@ const Address = () => {
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('addresses', setAddress, currentPage, user.username).then(value => {
+        getEntities('addresses', setAddress, curPage, user.username).then(value => {
             setPageable(value);
         });
     }

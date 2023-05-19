@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from "react";
-import useEntitiesService from "../../services/entities-service";
-import {Button, Card, Col, Container, Row, Table} from "react-bootstrap";
-import CreateOrUpdateSupplier from "../supplier/supplier-create-or-update";
+import useEntitiesService from "../../../services/entities-service";
+import {Badge, Button, Card, Col, Container, Row, Table} from "react-bootstrap";
 import {NavLink} from "react-router-dom";
-import ViewArrowSort from "../../shared/layout/view/view-arrow-sort";
+import ViewArrowSort from "../../../shared/layout/view/view-arrow-sort";
 import {Trash3Fill} from "react-bootstrap-icons";
-import Pageable from "../../shared/layout/pageable";
-import Loading from "../../shared/layout/loading";
+import Pageable from "../../../shared/layout/pageable";
+import Loading from "../../../shared/layout/loading";
 import CreateOrUpdateUsers from "./users-create-or-update";
 
 const Users = () => {
@@ -36,7 +35,7 @@ const Users = () => {
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('admin/users', setUsers, currentPage).then(value => {
+        getEntities('admin/users', setUsers, curPage).then(value => {
             setPageable(value);
         });
     }
@@ -49,6 +48,11 @@ const Users = () => {
         getEntities('admin/users', setUsers, currentPage, "user", sortParam, sortDirect).then(value => {
             setPageable(value);
         });
+    }
+
+    const badgeClick = async (user) => {
+        const newUser = {...user, activated: !user.activated}
+        await updateEntity('admin/users', newUser, setUsers, newUser.id, currentPage);
     }
 
     const RenderUsers = () => {
@@ -88,18 +92,23 @@ const Users = () => {
                                 <ViewArrowSort sortParam="authorities" keySort={keySort} isSort={isSort}/>
                             </NavLink>
                         </th>
+                        <th>Status</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                     {users.map((user, i) => (
-                        <tr key={`entity-${i}`}>
+                        <tr key={`user-${i}`}>
                             <td>{user.id}</td>
                             <td>{user.firstName}</td>
                             <td>{user.lastName}</td>
                             <td>{user.username}</td>
                             <td>{user.email}</td>
-                            <td>{user.authorities?.map((role) => role)}</td>
+                            <td>{user.authorities?.map((role, i) => <Badge key={i} bg="info">{role}</Badge>)}</td>
+                            <td> {user.activated?
+                                <Button variant="success" onClick={() => badgeClick(user)}>Activated</Button> :
+                                <Button variant="secondary" onClick={() => badgeClick(user)}>Not activated</Button> }
+                            </td>
                             <td>
                                 <Row>
                                     <Col style={{paddingRight: 3, paddingLeft: 15}}>

@@ -16,12 +16,16 @@ import BankAccount from "./entities/bank-account/bank-account";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import ModalSessionTimeout from "./shared/layout/modal-session-timeout";
-import Users from "./entities/users/users";
+import Users from "./modules/administration/users/users";
+import Authority from "./modules/administration/authority/authority";
 
 function App() {
 
     const [isAuth, setIsAuth] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [isSupplier, setIsSupplier] = useState(false);
+    const [isCustomer, setIsCustomer] = useState(false);
+    const [isActivated, setIsActivated] = useState(false);
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 
     const {logout} = useUserService();
@@ -30,19 +34,32 @@ function App() {
         logout();
         setIsAuth(false);
         setIsAdmin(false);
+        setIsSupplier(false);
+        setIsCustomer(false);
         setUser(JSON.parse(localStorage.getItem("user")));
     }
     const logIn = () => {
-        setUser(JSON.parse(localStorage.getItem("user")));
-        setIsAuth(true);
+        if(JSON.parse(localStorage.getItem("user")).activated) {
+            setIsActivated(true);
+            setUser(JSON.parse(localStorage.getItem("user")));
+            setIsAuth(true);
+        }
     }
 
     useEffect(() => {
         if (user && user.accessToken) {
-            setIsAuth(true);
+            if(user.activated) {
+                setIsAuth(true);
+            }
             user.authorities.map((authority) => {
                 if(authority === "ROLE_ADMIN") {
                     setIsAdmin(true);
+                }
+                if(authority === "ROLE_SUPPLIER") {
+                    setIsSupplier(true);
+                }
+                if(authority === "ROLE_CUSTOMER") {
+                    setIsCustomer(true);
                 }
             })
         }
@@ -50,7 +67,7 @@ function App() {
 
     return (
         <Router>
-            <AuthContext.Provider value={{user, isAuth, isAdmin, logIn, logOut}}>
+            <AuthContext.Provider value={{user, isAuth, isAdmin, isSupplier, isCustomer, isActivated, logIn, logOut}}>
                 <Header/>
                 {isAuth? <ModalSessionTimeout/> : null}
                 <Routes>
@@ -61,6 +78,7 @@ function App() {
                     <Route path="/address" element={<Address/>}/>
                     <Route path="/bank-account" element={<BankAccount/>}/>
                     <Route path="/users" element={<Users/>}/>
+                    <Route path="/authority" element={<Authority/>}/>
                 </Routes>
                 <AuthVerify/>
             </AuthContext.Provider>

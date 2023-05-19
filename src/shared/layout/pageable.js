@@ -36,7 +36,7 @@ const Pageable = (props) => {
             {totalPages > 3 && currentPage < totalPages-2? <Pagination.Item onClick={() => handleClick(currentPage + 2)}>{currentPage+2}</Pagination.Item> : null}
 
             {totalPages > 4 && currentPage < totalPages-3? <Pagination.Ellipsis /> : null}
-            {currentPage !== totalPages? <Pagination.Item onClick={() => handleClick(totalPages)}>{totalPages}</Pagination.Item> : null}
+            {currentPage !== totalPages && totalPages !== 0? <Pagination.Item onClick={() => handleClick(totalPages)}>{totalPages}</Pagination.Item> : null}
             <Pagination.Next onClick={() => handleClick(currentPage + 1)}/>
             <Pagination.Last onClick={() => handleClick(totalPages)}/>
         </Pagination>
