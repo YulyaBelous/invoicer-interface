@@ -4,10 +4,9 @@ const useEntitiesService = () => {
     const {loading, request, error, clearError} = useHttp();
 
     const _apiBase = "http://localhost:8080/api/";
-    const _apiLimit = 25;
 
     const getEntities = async (nameEntity, setState, offset = 0, username = "user", sortParam = "id", sortDirect = "asc") => {
-        const res = await request(`${_apiBase}${nameEntity}?offset=${offset}&limit=${_apiLimit}&sortParam=${sortParam}&sortDirect=${sortDirect}&username=${username}`);
+        const res = await request(`${_apiBase}${nameEntity}?offset=${offset}&sortParam=${sortParam}&sortDirect=${sortDirect}&username=${username}`);
         setState(res.content);
         return res;
     }

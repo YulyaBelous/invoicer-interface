@@ -7,6 +7,7 @@ import Validation from "../validation";
 const CreateOrUpdateSupplier = (props) => {
 
     const [supplier, setSupplier] = useState([]);
+
     const [show, setShow] = useState(false);
     const [isNew, setIsNew] = useState(true);
     const [errors, setErrors] = useState({});

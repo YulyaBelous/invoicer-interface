@@ -109,7 +109,6 @@ const Address = () => {
                             <NavLink onClick={() => sort("phone2")}>
                                 <ViewArrowSort sortParam="phone2" keySort={keySort} isSort={isSort}/>
                             </NavLink></th>
-                       {/* <th>Owner </th>*/}
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -126,9 +125,6 @@ const Address = () => {
                             <td>{address.email}</td>
                             <td>{address.phone1}</td>
                             <td>{address.phone2}</td>
-                           {/* <td>{address.supplier? address.supplier.name : ''}
-                                {address.customer? address.customer.name : ''}
-                            </td>*/}
                             <td>
                                 <Row>
                                     <Col style={{paddingRight: 3, paddingLeft: 10}}>

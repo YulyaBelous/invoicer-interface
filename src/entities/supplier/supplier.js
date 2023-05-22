@@ -15,9 +15,6 @@ import AuthContext from "../../context/auth-context";
 const Supplier = () => {
 
     const [suppliers, setSuppliers] = useState([]);
-    const [invoices, setInvoices] = useState([]);
-    const [addresses, setAddress] = useState([]);
-    const [bankAccounts, setBankAccounts] = useState([]);
 
     const [pageable, setPageable] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
@@ -32,9 +29,6 @@ const Supplier = () => {
         getEntities('suppliers', setSuppliers, currentPage, user.username).then(value => {
             setPageable(value);
         });
-        getEntities('invoices', setInvoices, currentPage, user.username);
-        getEntities('addresses', setAddress, currentPage, user.username);
-        getEntities('bank-accounts', setBankAccounts, currentPage, user.username);
     }, []);
 
     const createSupplier = async (supplier, currentPage) => {
@@ -62,17 +56,14 @@ const Supplier = () => {
         });
     }
 
-    const viewAllList = (list, name, title) => {
-        const listFiltered = list.filter(item => item.supplier? item.supplier.name === name : null);
+    const viewAllList = (list, title) => {
         return (
             <Dropdown>
                 <Dropdown.Toggle variant="success" id="dropdown-basic">{title}</Dropdown.Toggle>
                 <Dropdown.Menu>
-                    {listFiltered.map((item, i) => (
-                        <Dropdown.Item key={i}>
-                            {item.city? <ViewAddress address={item}/> : (item.id)}
-                        </Dropdown.Item>
-                    ))}
+                    {list? list.map((item, i) => (
+                        <Dropdown.Item key={i} >{item.city? <ViewAddress address={item}/> : (item.id)}</Dropdown.Item>
+                    )): null}
                 </Dropdown.Menu>
             </Dropdown>
         );
@@ -104,9 +95,9 @@ const Supplier = () => {
                             <td>{supplier.shortName}</td>
                             <td>{supplier.fullName}</td>
                             <td>{supplier.taxCode}</td>
-                            <td>{viewAllList(invoices, supplier.name, 'Invoices')}</td>
-                            <td>{viewAllList(addresses, supplier.name, 'Addresses')}</td>
-                            <td>{viewAllList(bankAccounts, supplier.name, 'Bank Accounts')}</td>
+                            <td>{viewAllList(supplier?.invoices, 'Invoices')}</td>
+                            <td>{viewAllList(supplier?.addresses, 'Addresses')}</td>
+                            <td>{viewAllList(supplier?.bankAccounts, 'Bank Accounts')}</td>
                             <td>
                                 <Row>
                                     <Col style={{paddingRight: 3, paddingLeft: 15}}>

@@ -12,11 +12,6 @@ export const CreateOrUpdateInvoice = (props) => {
     const [invoice, setInvoice] = useState();
     const [suppliers, setSuppliers] = useState([]);
     const [customers, setCustomers] = useState([]);
-    const [addresses, setAddresses] = useState([]);
-    const [bankAccounts, setBankAccounts] = useState([]);
-
-    const [addressFiltered, setAddressFiltered] = useState([]);
-    const [bankFiltered, setBankFiltered] = useState([]);
 
     const [show, setShow] = useState(false);
     const [isNew, setIsNew] = useState(true);
@@ -25,20 +20,18 @@ export const CreateOrUpdateInvoice = (props) => {
     const {getEntities} = useEntitiesService();
     const {validation} = Validation();
 
-    const {user, isAdmin} = useContext(AuthContext);
+    const {user, isAdmin, isCustomer} = useContext(AuthContext);
 
     useEffect(() => {
         getEntities('suppliers', setSuppliers, 0, user.username);
         getEntities('customers', setCustomers, 0, user.username);
-        getEntities('addresses', setAddresses, 0, user.username);
-        getEntities('bank-accounts', setBankAccounts, 0, user.username);
         setIsNew(props.isNew);
     }, []);
 
     const handleClickOpen = () => {
         setShow(true);
-        props.invoice?.supplier? changeSuppOrCus(null, suppliers, "supplier", props.invoice?.supplier) : changeSuppOrCus();
-        props.invoice?.customer? changeSuppOrCus(null, customers, "customer", props.invoice?.customer) : changeSuppOrCus();
+        props.invoice?.supplier? handleChange("supplier", suppliers, props.invoice?.supplier) : handleChange();
+        props.invoice?.customer? handleChange("customer", customers, props.invoice?.customer) : handleChange();
         if(isAdmin) {
             setInvoice({...props.invoice});
         } else {
@@ -50,27 +43,18 @@ export const CreateOrUpdateInvoice = (props) => {
         setShow(false);
     };
 
-   const handleChange = (event, entity) => {
-        setInvoice({
-            ...invoice,
-            [event.target.name] : entity?.find(it => it.id.toString() === event.target.value.toString())
-        })
-        if ( !!errors[event.target.name] ) setErrors({...errors, [event.target.name]: null})
-    }
-
-    const changeSuppOrCus = (event, entities, entity, invoiceValue) => {
-        const value = event?.target? event?.target?.value : invoiceValue?.id;
-        let idEntity = entities?.find(it => it.id.toString() === value?.toString())?.id;
-        setAddressFiltered(addresses.filter(item => item[entity]? item[entity].id === idEntity : null));
-        setBankFiltered(bankAccounts.filter(item => item[entity]? item[entity].id === idEntity : null));
-        setInvoice({
-            ...invoice,
-            [entity]: entities?.find(it => it.id.toString() === value?.toString())
-        })
-        if ( !!errors[event?.target.name] ) setErrors({...errors, [event?.target.name]: null})
+   const handleChange = (event, entities, invoiceValue) => {
+       const value = event?.target? event?.target.value : invoiceValue?.id;
+       const entity = event?.target? event.target.name : event;
+       setInvoice({
+           ...invoice,
+           [entity]: entities?.find(it => it.id.toString() === value?.toString())
+       })
+       if ( !!errors[entity] ) setErrors({...errors, [entity]: null})
     }
 
     const setField = (e) => {
+       setInvoice({...invoice, [e.target.name] : e.target.value});
         if ( !!errors[e.target.name] ) setErrors({...errors, [e.target.name]: null})
     }
 
@@ -82,23 +66,10 @@ export const CreateOrUpdateInvoice = (props) => {
         if ( Object.keys(newErrors).length > 0 ) {
             setErrors(newErrors)
         } else {
-            let idSupplier, idCustomer;
-            invoice?.supplier?.id? idSupplier = invoice?.supplier?.id : idSupplier = invoice?.supplier;
-            invoice?.customer?.id? idCustomer = invoice?.customer?.id : idCustomer = invoice?.customer;
-            const invoiceEntity = {
-                ...invoice,
-                ...values,
-                supplier: suppliers.find(it => it.id.toString() === idSupplier?.toString()),
-                customer: customers.find(it => it.id.toString() === idCustomer?.toString()),
-                addressSupplier: addresses.find(it => it.id.toString() === invoice?.addressSupplier?.id.toString()),
-                addressCustomer: addresses.find(it => it.id.toString() === invoice?.addressCustomer?.id.toString()),
-                bankAccountSupplier: bankAccounts.find(it => it.id.toString() === invoice?.bankAccountSupplier?.id.toString()),
-                bankAccountCustomer: bankAccounts.find(it => it.id.toString() === invoice?.bankAccountCustomer?.id.toString())
-            }
             if(isNew) {
-                props.createInvoice(invoiceEntity);
+                props.createInvoice(invoice);
             } else {
-                props.updateInvoice(invoiceEntity, invoiceEntity.id);
+                props.updateInvoice(invoice, invoice.id);
             }
             handleClose();
         }
@@ -118,10 +89,10 @@ export const CreateOrUpdateInvoice = (props) => {
                 <Form.Select disabled={isSupplier? disabledSupplier : disabledCustomer} onChange={(e) => handleChange(e, entities)} isInvalid={!!valid} name={entityName}>
                     <option>{ entity? (isAddress? `${entity?.country}, ${entity?.city}, ${entity?.postCode}, ${entity?.streetLine1}` : entity?.bankName) : (`Select ${title}`)}</option>
                     {
-                        isAddress? (addressFiltered ? addressFiltered.map(address =>
+                        isAddress? (entities ? entities.map(address =>
                             <option value={address?.id} key={address.id}>{`${address.country}, ${address.city}, ${address.postCode}, ${address.streetLine1}`}</option>
                         ) : null)
-                        : (bankFiltered ? bankFiltered.map(account =>
+                        : (entities ? entities.map(account =>
                         <option value={account.id} key={account.id}>{account.bankName}</option>
                         ) : null)
                     }
@@ -135,8 +106,9 @@ export const CreateOrUpdateInvoice = (props) => {
 
     return (
         <div>
-            {isNew? <Button onClick={handleClickOpen} className="mb-3 float-sm-end" variant="primary"> <Plus size={29}/> New invoice</Button>
-                : <Button onClick={ handleClickOpen} variant="primary"><PencilFill/></Button>}
+            {isNew? (!isCustomer? <Button onClick={handleClickOpen} className="mb-3 float-sm-end" variant="primary">
+                    <Plus size={29}/> New invoice </Button> : null)
+                : (<Button onClick={ handleClickOpen} variant="primary"><PencilFill/></Button>)}
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>{isNew? 'Create a new Invoice' : `Edit Invoice ${props.invoice?.id}`}</Modal.Title>
@@ -222,7 +194,7 @@ export const CreateOrUpdateInvoice = (props) => {
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label >Supplier</Form.Label>
-                            <Form.Select onChange={(e) => changeSuppOrCus(e, suppliers, "supplier")} isInvalid={!!errors.supplier} name="supplier">
+                            <Form.Select onChange={(e) => handleChange(e, suppliers)} isInvalid={!!errors.supplier} name="supplier">
                                 <option>{props.invoice?.supplier? props.invoice.supplier.name: 'Select Supplier'} </option>
                                 {
                                     suppliers ? suppliers.map(supplier =>
@@ -234,11 +206,11 @@ export const CreateOrUpdateInvoice = (props) => {
                                 {errors.supplier}
                             </Form.Control.Feedback>
                         </Form.Group>
-                        {viewAddressOrBank("Address Supplier", "addressSupplier", addresses, invoice?.addressSupplier, true, true, errors.addressSupplier)}
-                        {viewAddressOrBank("Bank Account Supplier", "bankAccountSupplier", bankAccounts, invoice?.bankAccountSupplier, false, true, errors.bankAccountSupplier)}
+                        {viewAddressOrBank("Address Supplier", "addressSupplier", invoice?.supplier?.addresses, invoice?.addressSupplier, true, true, errors.addressSupplier)}
+                        {viewAddressOrBank("Bank Account Supplier", "bankAccountSupplier", invoice?.supplier?.bankAccounts, invoice?.bankAccountSupplier, false, true, errors.bankAccountSupplier)}
                         <Form.Group className="mb-3">
                             <Form.Label >Customer</Form.Label>
-                            <Form.Select onChange={(e) => changeSuppOrCus(e, customers, "customer")} isInvalid={!!errors.customer} name="customer">
+                            <Form.Select onChange={(e) => handleChange(e, customers)} isInvalid={!!errors.customer} name="customer">
                                 <option>{props.invoice?.customer? props.invoice.customer.name: 'Select Customer'} </option>
                                 {
                                     customers ? customers.map(customer =>
@@ -250,8 +222,8 @@ export const CreateOrUpdateInvoice = (props) => {
                                 {errors.customer}
                             </Form.Control.Feedback>
                         </Form.Group>
-                        {viewAddressOrBank("Address Customer", "addressCustomer", addresses, props.invoice?.addressCustomer, true, false, errors.addressCustomer)}
-                        {viewAddressOrBank("Bank Account Customer", "bankAccountCustomer", bankAccounts, props.invoice?.bankAccountCustomer, false, false, errors.bankAccountCustomer)}
+                        {viewAddressOrBank("Address Customer", "addressCustomer", invoice?.customer?.addresses, props.invoice?.addressCustomer, true, false, errors.addressCustomer)}
+                        {viewAddressOrBank("Bank Account Customer", "bankAccountCustomer", invoice?.customer?.bankAccounts, props.invoice?.bankAccountCustomer, false, false, errors.bankAccountCustomer)}
                         <Button className="d-block mx-auto" type="submit" variant="primary" >
                             Save
                         </Button>

@@ -7,6 +7,7 @@ import Validation from "../validation";
 export const CreateOrUpdateCustomer = (props) => {
 
     const [customer, setCustomer] = useState([]);
+
     const [show, setShow] = useState(false);
     const [isNew, setIsNew] = useState(true);
     const [errors, setErrors] = useState({});

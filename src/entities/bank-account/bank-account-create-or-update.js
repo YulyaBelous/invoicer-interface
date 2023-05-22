@@ -21,7 +21,7 @@ export const CreateOrUpdateBankAccount = (props) => {
     const {getEntities} = useEntitiesService();
     const {validation} = Validation();
 
-    const {user, isAdmin} = useContext(AuthContext);
+    const {user, isAdmin, isSupplier, isCustomer} = useContext(AuthContext);
 
     const radios = [
         { name: 'Supplier', value: '1' },
@@ -30,8 +30,12 @@ export const CreateOrUpdateBankAccount = (props) => {
 
     useEffect(() => {
         getEntities('addresses', setAddress, 0, user.username);
-        getEntities('suppliers', setSuppliers, 0, user.username);
-        getEntities('customers', setCustomers, 0, user.username);
+        if(isAdmin || isSupplier) {
+            getEntities('suppliers', setSuppliers, 0, user.username);
+        }
+        if(isAdmin || isCustomer) {
+            getEntities('customers', setCustomers, 0, user.username);
+        }
         setIsNew(props.isNew);
     }, []);
 
@@ -76,15 +80,14 @@ export const CreateOrUpdateBankAccount = (props) => {
         if ( Object.keys(newErrors).length > 0 ) {
             setErrors(newErrors)
         } else {
-            let idSupplier = null, idCustomer = null;
-            bankAccount?.supplier? (bankAccount?.supplier?.id? idSupplier = bankAccount?.supplier?.id : idSupplier = bankAccount?.supplier) :
-                (bankAccount?.customer?.id? idCustomer = bankAccount?.customer?.id : idCustomer = bankAccount?.customer)
+            const supplier = isSupplier? suppliers.find(it => it.username === user.username) : bankAccount?.supplier;
+            const customer = isCustomer? customers.find(it => it.username === user.username) : bankAccount?.customer;
             const bankAccountEntity = {
                 ...bankAccount,
                 ...values,
-                supplier: suppliers.find(it => it.id.toString() === idSupplier?.toString()),
-                customer: customers.find(it => it.id.toString() === idCustomer?.toString()),
-                address: addresses.find(it => it.id.toString() === bankAccount?.address?.id.toString())
+                supplier: supplier,
+                customer: customer,
+                address: bankAccount?.address
             }
             isNew?  props.createBankAccount(bankAccountEntity) : props.updateBankAccount(bankAccountEntity, bankAccountEntity.id);
             handleClose();
@@ -164,7 +167,7 @@ export const CreateOrUpdateBankAccount = (props) => {
                                 {errors.address}
                             </Form.Control.Feedback>
                         </Form.Group>
-                        <ButtonGroup>
+                        {isAdmin? <ButtonGroup>
                             {radios.map((radio, i) => (
                                 <ToggleButton
                                     key={i}
@@ -179,9 +182,9 @@ export const CreateOrUpdateBankAccount = (props) => {
                                     {radio.name}
                                 </ToggleButton>
                             ))}
-                        </ButtonGroup>
-                        {radioValue === '1' ? <ViewSupplierOrCustomer title="Supplier" entities={suppliers} entity={props.bankAccount} valid={errors.supplier} isNew={isNew}/>
-                            : <ViewSupplierOrCustomer title="Customer" entities={customers} entity={props.bankAccount} valid={errors.customer} isNew={isNew}/>}
+                        </ButtonGroup> : null }
+                        { isAdmin? (radioValue === '1' ? <ViewSupplierOrCustomer title="Supplier" entities={suppliers} entity={props.bankAccount} valid={errors.supplier} isNew={isNew}/>
+                            : <ViewSupplierOrCustomer title="Customer" entities={customers} entity={props.bankAccount} valid={errors.customer} isNew={isNew}/>) : null}
                         <Button className="d-block mx-auto" type="submit" variant="primary" >
                             Save
                         </Button>

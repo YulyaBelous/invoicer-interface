@@ -15,9 +15,6 @@ import AuthContext from "../../context/auth-context";
 const Customer = () => {
 
     const [customers, setCustomers] = useState([]);
-    const [invoices, setInvoices] = useState([]);
-    const [addresses, setAddresses] = useState([]);
-    const [bankAccounts, setBankAccounts] = useState([]);
 
     const [pageable, setPageable] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
@@ -32,9 +29,6 @@ const Customer = () => {
         getEntities('customers', setCustomers, currentPage, user.username).then(value => {
             setPageable(value);
         });
-        getEntities('invoices', setInvoices, currentPage, user.username);
-        getEntities('addresses', setAddresses, currentPage, user.username);
-        getEntities('bank-accounts', setBankAccounts, currentPage, user.username);
     }, []);
 
     const createCustomer = async (customer) => {
@@ -62,13 +56,12 @@ const Customer = () => {
         });
     }
 
-    const viewAllList = (list, name, title) => {
-        const listFiltered = list.filter(item => item.customer? item.customer.name === name : null);
+    const viewAllList = (list, title) => {
         return (
             <Dropdown>
                 <Dropdown.Toggle variant="success" id="dropdown-basic">{title}</Dropdown.Toggle>
                 <Dropdown.Menu>
-                    {listFiltered? listFiltered.map((item, i) => (
+                    {list? list.map((item, i) => (
                         <Dropdown.Item key={i} >{item.city? <ViewAddress address={item}/> : (item.id)}</Dropdown.Item>
                     )): null}
                 </Dropdown.Menu>
@@ -102,9 +95,9 @@ const Customer = () => {
                             <td>{customer.shortName}</td>
                             <td>{customer.fullName}</td>
                             <td>{customer.taxCode}</td>
-                            <td>{viewAllList(invoices, customer.name, 'Invoices')}</td>
-                            <td>{viewAllList(addresses, customer.name, 'Addresses')}</td>
-                            <td>{viewAllList(bankAccounts, customer.name, 'Bank Accounts')}</td>
+                            <td>{viewAllList(customer?.invoices, 'Invoices')}</td>
+                            <td>{viewAllList(customer?.addresses, 'Addresses')}</td>
+                            <td>{viewAllList(customer?.bankAccounts, 'Bank Accounts')}</td>
                             <td>
                                 <Row>
                                     <Col style={{paddingRight: 3, paddingLeft: 15}}>
