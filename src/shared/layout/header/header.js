@@ -40,6 +40,7 @@ const Header = () => {
                     {isAdmin? <NavDropdown title={<span> <PersonFillGear size={20}/> Administration</span>}>
                         <NavDropdown.Item as={NavLink} to="/users"><CaretRightFill color="royalblue"/> Users</NavDropdown.Item>
                         <NavDropdown.Item as={NavLink} to="/authority"><CaretRightFill color="royalblue"/> Authority</NavDropdown.Item>
+                        <NavDropdown.Item as={NavLink} to="/available-customers"><CaretRightFill color="royalblue"/> Available Customer</NavDropdown.Item>
                     </NavDropdown> : null}
                     <NavDropdown title={<span> <PersonCircle size={20}/> Account</span>} >
                         {!isAuth? <RegisterForm/> : null}

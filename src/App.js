@@ -18,6 +18,7 @@ import './App.css';
 import ModalSessionTimeout from "./shared/layout/modal-session-timeout";
 import Users from "./modules/administration/users/users";
 import Authority from "./modules/administration/authority/authority";
+import AvailableCustomer from "./modules/administration/available-customer/available-customer";
 
 function App() {
 
@@ -79,6 +80,7 @@ function App() {
                     <Route path="/bank-account" element={<BankAccount/>}/>
                     <Route path="/users" element={<Users/>}/>
                     <Route path="/authority" element={<Authority/>}/>
+                    <Route path="/available-customers" element={<AvailableCustomer/>}/>
                 </Routes>
                 <AuthVerify/>
             </AuthContext.Provider>
