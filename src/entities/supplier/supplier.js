@@ -6,10 +6,9 @@ import {Trash3Fill} from "react-bootstrap-icons";
 import useEntitiesService from "../../services/entities-service";
 import CreateOrUpdateSupplier from "./supplier-create-or-update";
 import ViewAddress from "../address/address-view";
-import Pageable from "../../shared/layout/pageable";
+import Pageable from "../../shared/components/pageable";
 import Loading from "../../shared/layout/loading";
-import {NavLink} from "react-router-dom";
-import ViewArrowSort from "../../shared/layout/view/view-arrow-sort";
+import SortButton from "../../shared/components/sort-button";
 import AuthContext from "../../context/auth-context";
 
 const Supplier = () => {
@@ -76,11 +75,21 @@ const Supplier = () => {
                 <Table striped bordered hover >
                     <thead>
                     <tr>
-                        <th>Id <NavLink onClick={() => sort("id")}> <ViewArrowSort sortParam="id" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Name <NavLink onClick={() => sort("name")}> <ViewArrowSort sortParam="name" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Short name <NavLink onClick={() => sort("shortName")}> <ViewArrowSort sortParam="shortName" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Full name <NavLink onClick={() => sort("fullName")}> <ViewArrowSort sortParam="fullName" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Tax code <NavLink onClick={() => sort("taxCode")}> <ViewArrowSort sortParam="taxCode" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                        <th>Id
+                            <SortButton sortParam="id" keySort={keySort} isSort={isSort} onSort={sort} />
+                        </th>
+                        <th>Name
+                            <SortButton sortParam="name" keySort={keySort} isSort={isSort} onSort={sort} />
+                        </th>
+                        <th>Short name
+                            <SortButton sortParam="shortName" keySort={keySort} isSort={isSort} onSort={sort} />
+                        </th>
+                        <th>Full name
+                            <SortButton sortParam="fullName" keySort={keySort} isSort={isSort} onSort={sort} />
+                        </th>
+                        <th>Tax code
+                            <SortButton sortParam="taxCode" keySort={keySort} isSort={isSort} onSort={sort} />
+                        </th>
                         <th>Invoices</th>
                         <th>Addresses</th>
                         <th>Bank accounts</th>

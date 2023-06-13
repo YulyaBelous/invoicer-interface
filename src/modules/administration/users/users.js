@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from "react";
 import useEntitiesService from "../../../services/entities-service";
 import {Badge, Button, Card, Col, Container, Row, Table} from "react-bootstrap";
-import {NavLink} from "react-router-dom";
-import ViewArrowSort from "../../../shared/layout/view/view-arrow-sort";
 import {Trash3Fill} from "react-bootstrap-icons";
-import Pageable from "../../../shared/layout/pageable";
+import Pageable from "../../../shared/components/pageable";
 import Loading from "../../../shared/layout/loading";
 import CreateOrUpdateUsers from "./users-create-or-update";
+import SortButton from "../../../shared/components/sort-button";
 
 const Users = () => {
 
@@ -62,35 +61,23 @@ const Users = () => {
                 <Table striped bordered hover >
                     <thead>
                     <tr>
-                        <th>Id
-                            <NavLink onClick={() => sort("id")}>
-                                <ViewArrowSort sortParam="id" keySort={keySort} isSort={isSort}/>
-                            </NavLink>
+                        <th> Id
+                            <SortButton sortParam="id" keySort={keySort} isSort={isSort} onSort={sort} />
                         </th>
-                        <th>First name
-                            <NavLink onClick={() => sort("firstName")}>
-                                <ViewArrowSort sortParam="firstName" keySort={keySort} isSort={isSort}/>
-                            </NavLink>
+                        <th> First name
+                            <SortButton sortParam="firstName" keySort={keySort} isSort={isSort} onSort={sort} />
                         </th>
-                        <th>Last name
-                            <NavLink onClick={() => sort("lastName")}>
-                                <ViewArrowSort sortParam="lastName" keySort={keySort} isSort={isSort}/>
-                            </NavLink>
+                        <th> Last name
+                            <SortButton sortParam="lastName" keySort={keySort} isSort={isSort} onSort={sort} />
                         </th>
-                        <th>Username
-                            <NavLink onClick={() => sort("username")}>
-                                <ViewArrowSort sortParam="username" keySort={keySort} isSort={isSort}/>
-                            </NavLink>
+                        <th> Username
+                            <SortButton sortParam="username" keySort={keySort} isSort={isSort} onSort={sort} />
                         </th>
-                        <th>Email
-                            <NavLink onClick={() => sort("email")}>
-                                <ViewArrowSort sortParam="email" keySort={keySort} isSort={isSort}/>
-                            </NavLink>
+                        <th> Email
+                            <SortButton sortParam="email" keySort={keySort} isSort={isSort} onSort={sort} />
                         </th>
-                        <th>Authorities
-                            <NavLink onClick={() => sort("authorities")}>
-                                <ViewArrowSort sortParam="authorities" keySort={keySort} isSort={isSort}/>
-                            </NavLink>
+                        <th> Authorities
+                            <SortButton sortParam="authorities" keySort={keySort} isSort={isSort} onSort={sort} />
                         </th>
                         <th>Status</th>
                         <th>Actions</th>

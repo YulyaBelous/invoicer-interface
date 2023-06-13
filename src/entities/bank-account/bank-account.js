@@ -7,10 +7,9 @@ import useEntitiesService from "../../services/entities-service";
 import {CreateOrUpdateBankAccount} from "./bank-account-create-or-update";
 
 import ViewAddress from "../address/address-view";
-import Pageable from "../../shared/layout/pageable";
+import Pageable from "../../shared/components/pageable";
 import Loading from "../../shared/layout/loading";
-import {NavLink} from "react-router-dom";
-import ViewArrowSort from "../../shared/layout/view/view-arrow-sort";
+import SortButton from "../../shared/components/sort-button";
 import AuthContext from "../../context/auth-context";
 
 const BankAccount = () => {
@@ -64,15 +63,33 @@ const BankAccount = () => {
                 <Table striped bordered hover >
                     <thead>
                     <tr>
-                        <th>Id <NavLink onClick={() => sort("id")}> <ViewArrowSort sortParam="id" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Name <NavLink onClick={() => sort("name")}> <ViewArrowSort sortParam="name" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Account number <NavLink onClick={() => sort("accountNumber")}> <ViewArrowSort sortParam="accountNumber" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Bank name <NavLink onClick={() => sort("bankName")}> <ViewArrowSort sortParam="bankName" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Swift <NavLink onClick={() => sort("swift")}> <ViewArrowSort sortParam="swift" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Address <NavLink onClick={() => sort("address")}> <ViewArrowSort sortParam="address" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Corr. name <NavLink onClick={() => sort("correspondentName")}> <ViewArrowSort sortParam="correspondentName" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Corr. address <NavLink onClick={() => sort("correspondentAddress")}> <ViewArrowSort sortParam="correspondentAddress" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                        <th>Corr. swift <NavLink onClick={() => sort("correspondentSwift")}> <ViewArrowSort sortParam="correspondentSwift" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                        <th>Id
+                            <SortButton sortParam="id" keySort={keySort} isSort={isSort} onSort={sort} />
+                        </th>
+                        <th>Name
+                            <SortButton sortParam="name" keySort={keySort} isSort={isSort} onSort={sort} />
+                        </th>
+                        <th>Account number
+                            <SortButton sortParam="accountNumber" keySort={keySort} isSort={isSort} onSort={sort} />
+                       </th>
+                        <th>Bank name
+                            <SortButton sortParam="bankName" keySort={keySort} isSort={isSort} onSort={sort} />
+                        </th>
+                        <th>Swift
+                            <SortButton sortParam="swift" keySort={keySort} isSort={isSort} onSort={sort} />
+                        </th>
+                        <th>Address
+                            <SortButton sortParam="address" keySort={keySort} isSort={isSort} onSort={sort} />
+                        </th>
+                        <th>Corr. name
+                            <SortButton sortParam="correspondentName" keySort={keySort} isSort={isSort} onSort={sort} />
+                        </th>
+                        <th>Corr. address
+                            <SortButton sortParam="correspondentAddress" keySort={keySort} isSort={isSort} onSort={sort} />
+                        </th>
+                        <th>Corr. swift
+                            <SortButton sortParam="correspondentSwift" keySort={keySort} isSort={isSort} onSort={sort} />
+                        </th>
                         <th>Actions</th>
                     </tr>
                     </thead>

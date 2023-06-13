@@ -1,12 +1,11 @@
 import React, {useContext, useEffect, useState} from "react";
 import useEntitiesService from "../../../services/entities-service";
 import AuthContext from "../../../context/auth-context";
-import {Button, Card, Col, Container, Row, Table} from "react-bootstrap";
-import {NavLink} from "react-router-dom";
-import ViewArrowSort from "../../../shared/layout/view/view-arrow-sort";
-import Pageable from "../../../shared/layout/pageable";
+import {Card, Col, Container, Row, Table} from "react-bootstrap";
+import Pageable from "../../../shared/components/pageable";
 import Loading from "../../../shared/layout/loading";
 import UpdateAvailableCustomer from "./available-customer-update";
+import SortButton from "../../../shared/components/sort-button";
 
 const AvailableCustomer = () => {
 
@@ -29,7 +28,6 @@ const AvailableCustomer = () => {
 
     const updateAvailableCustomer = async (supplier, id) => {
 
-        console.log(supplier)
         await updateEntity('suppliers', supplier, setSuppliers, id, currentPage, user.username);
     }
 
@@ -51,22 +49,16 @@ const AvailableCustomer = () => {
     }
 
     const RenderAvailableCustomer = () => {
-        console.log(suppliers);
         return(
             <Container fluid>
-                {/*<CreateOrUpdateAuthority createAuthority={createAuthority} isNew={true}/>*/}
                 <Table striped bordered hover >
                     <thead>
                     <tr>
                         <th>Id
-                            <NavLink onClick={() => sort("id")}>
-                                <ViewArrowSort sortParam="id" keySort={keySort} isSort={isSort}/>
-                            </NavLink>
+                            <SortButton sortParam="id" keySort={keySort} isSort={isSort} onSort={sort} />
                         </th>
                         <th>Supplier
-                            <NavLink onClick={() => sort("fullName")}>
-                                <ViewArrowSort sortParam="fullName" keySort={keySort} isSort={isSort}/>
-                            </NavLink>
+                            <SortButton sortParam="fullName" keySort={keySort} isSort={isSort} onSort={sort} />
                         </th>
                         <th>Customers</th>
                         <th>Actions</th>

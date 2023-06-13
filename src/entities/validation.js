@@ -4,7 +4,6 @@ const Validation = () => {
     const validation = (form) => {
         let errors = {};
         for(const [key, value] of Object.entries(form)) {
-            /*console.log("key " + key + " value " + value)*/
             if(!value || value === '') {
                 errors = {...errors, [key] : 'This field cannot be empty'};
             } else if(key === 'unitPrice' || key === 'quantity' || key === 'amount') {

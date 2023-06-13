@@ -1,8 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import {Button, Form, Modal} from "react-bootstrap";
-import {PencilFill, Plus} from "react-bootstrap-icons";
+import {PencilFill} from "react-bootstrap-icons";
 import useEntitiesService from "../../../services/entities-service";
-import Validation from "../../../entities/validation";
 import AuthContext from "../../../context/auth-context";
 
 const UpdateAvailableCustomer = (props) => {
@@ -11,9 +10,7 @@ const UpdateAvailableCustomer = (props) => {
     const [customers, setCustomers] = useState([]);
 
     const [show, setShow] = useState(false);
-    const [errors, setErrors] = useState({});
-
-    const {validation} = Validation();
+    const [isChecked, setIsChecked] = useState([]);
 
     const {getEntities} = useEntitiesService();
 
@@ -26,34 +23,31 @@ const UpdateAvailableCustomer = (props) => {
     const handleClickOpen = () => {
         setShow(true);
         setSupplier({...props.supplier});
+        setIsChecked(new Array(customers.length).fill(false))
     };
 
     const handleClose = () => {
         setShow(false);
     };
 
-    const handleChange = (event) => {
-        console.log(event.target.name)
-        console.log(event.target.value)
-        if(supplier?.availableCustomers) {
-            setSupplier({...supplier, availableCustomers: [...supplier.availableCustomers, event.target.value]})
-        } else {
-            setSupplier({...supplier, availableCustomers: [event.target.value]})
-        }
-        if ( !!errors[event.target.name] ) setErrors({...errors, [event.target.name]: null})
+    const handleChange = (event, i) => {
+
+        const checked = [...isChecked];
+        checked[i] = !isChecked[i];
+        setIsChecked(checked);
+
+        const availableCustomers = customers
+            .filter((customer, index) => checked[index])
+            .map((customer) => customer.fullName);
+
+        console.log(checked)
+        console.log(availableCustomers)
+        setSupplier({...supplier, availableCustomers});
     }
     const handleSave = (e) => {
         e.preventDefault();
-        const supplierEntity = {...supplier, availableCustomers: supplier.availableCustomers}
-        console.log(supplierEntity)
-        const newErrors = validation(supplierEntity);
-        if ( Object.keys(newErrors).length > 0 ) {
-            console.log(newErrors)
-            setErrors(newErrors)
-        } else {
-            props.updateAvailableCustomer(supplierEntity, supplier.id);
-            handleClose();
-        }
+        props.updateAvailableCustomer(supplier, supplier.id);
+        handleClose();
     }
 
     return (
@@ -64,21 +58,18 @@ const UpdateAvailableCustomer = (props) => {
                     <Modal.Title>{`Edit Supplier ${props.supplier?.id}`}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onChange={handleChange} onSubmit={e => handleSave(e)}>
-
-                        <Form.Group>
-                            <Form.Label >Customers</Form.Label>
-                            <Form.Select isInvalid={!!errors.availableCustomers} name="availableCustomers" multiple>
-                                {customers?.map(customer => (
-                                    <option value={customer.fullName} key={customer.id}>
-                                        {customer.fullName}
-                                    </option>
-                                ))}
-                            </Form.Select>
-                            <Form.Control.Feedback type="invalid">
-                                { errors.availableCustomers }
-                            </Form.Control.Feedback>
-                        </Form.Group>
+                    <Form onSubmit={e => handleSave(e)}> {customers?.map((customer, i) => (
+                        <div>
+                            <input
+                                type="checkbox"
+                                name="availableCustomers"
+                                key={`customer-${i}`}
+                                value={customer.fullName}
+                                checked={isChecked[i]}
+                                onChange={e => handleChange(e, i)}
+                            />
+                            {customer.fullName}
+                        </div>))}
                         <Button className="d-block mx-auto"  type="submit" variant="primary" >
                             Save
                         </Button>

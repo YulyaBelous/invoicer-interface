@@ -3,6 +3,8 @@ import {Button, Form, Modal} from "react-bootstrap";
 import {PencilFill, Plus} from "react-bootstrap-icons";
 import useEntitiesService from "../../../services/entities-service";
 import Validation from "../../../entities/validation";
+import renderFormGroup from "../../../shared/components/render-form-group";
+import {RenderFormSelect} from "../../../shared/components/render-form-select";
 
 const CreateOrUpdateUsers = (props) => {
 
@@ -24,36 +26,34 @@ const CreateOrUpdateUsers = (props) => {
 
     const handleClickOpen = () => {
         setShow(true);
-            setUser({...props.user});
+        setUser({...props.user});
     };
 
     const handleClose = () => {
         setShow(false);
     };
 
-    const setField = (e) => {
-        if ( !!errors[e.target.name] ) setErrors({...errors, [e.target.name]: null})
+    const handleChange = (event) => {
+        let { name, value, selectedOptions } = event.target;
+        if(name === "authorities") {
+            value = Array.from(selectedOptions, (option) => option.value);
+        }
+        setUser(prevUser => ({...prevUser, [name]: value}));
+        if (errors[name]) {
+            setErrors(prevErrors => ({...prevErrors, [name]: null}));
+        }
     }
 
-    const handleChange = (event) => {
-        if(user?.authorities) {
-            setUser({...user, authorities: [...user.authorities, event.target.value]})
-        } else {
-            setUser({...user, authorities: [event.target.value]})
-        }
-        setField(event);
-    }
     const handleSave = (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const values = Object.fromEntries(formData.entries());
-        const userEntity = {...user, ...values, authorities: user.authorities}
-        const newErrors = validation(userEntity);
-        if ( Object.keys(newErrors).length > 0 ) {
-            setErrors(newErrors)
-        } else {
-            isNew ? props.createUser(userEntity) : props.updateUser(userEntity, user.id);
+        const newErrors = validation(values);
+        if ( Object.keys(newErrors).length === 0) {
+            isNew ? props.createUser(user) : props.updateUser(user, user.id);
             handleClose();
+        } else {
+            setErrors(newErrors)
         }
     }
 
@@ -66,73 +66,20 @@ const CreateOrUpdateUsers = (props) => {
                     <Modal.Title>{isNew? 'Create a new User' : `Edit User ${props.user?.id}`}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={e => handleSave(e)}>
-                        <Form.Group className="mb-3">
-                            <Form.Label >First name</Form.Label>
-                            <Form.Control onChange={setField}
-                                          isInvalid={!!errors.firstName}
-                                          defaultValue={props.user?.firstName}
-                                          name="firstName"/>
-                            <Form.Control.Feedback type="invalid">
-                                { errors.firstName }
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label >Last name</Form.Label>
-                            <Form.Control onChange={setField}
-                                          isInvalid={!!errors.lastName}
-                                          defaultValue={props.user?.lastName}
-                                          name="lastName"/>
-                            <Form.Control.Feedback type="invalid">
-                                { errors.lastName }
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label >Username</Form.Label>
-                            <Form.Control onChange={setField}
-                                          isInvalid={!!errors.username}
-                                          defaultValue={props.user?.username}
-                                          name="username"/>
-                            <Form.Control.Feedback type="invalid">
-                                { errors.username }
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label >Email</Form.Label>
-                            <Form.Control onChange={setField}
-                                          isInvalid={!!errors.email}
-                                          defaultValue={props.user?.email}
-                                          name="email"/>
-                            <Form.Control.Feedback type="invalid">
-                                { errors.email }
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        {isNew? <Form.Group className="mb-3">
-                            <Form.Label >Password</Form.Label>
-                            <Form.Control onChange={setField}
-                                          isInvalid={!!errors.password}
-                                          defaultValue={props.user?.password}
-                                          name="password"/>
-                            <Form.Control.Feedback type="invalid">
-                                { errors.password }
-                            </Form.Control.Feedback>
-                        </Form.Group> : null}
-                        <Form.Group>
-                            <Form.Label >Authorities</Form.Label>
-                            <Form.Select onChange={handleChange} isInvalid={!!errors.authorities} name="authorities" multiple>
-                                {authorities?.map(role => (
-                                    <option value={role.name} key={role.id}>
-                                        {role.name}
-                                    </option>
-                                ))}
-                            </Form.Select>
-                            <Form.Control.Feedback type="invalid">
-                                { errors.authorities }
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Button className="d-block mx-auto"  type="submit" variant="primary" >
-                            Save
-                        </Button>
+                    <Form onChange={handleChange} onSubmit={e => handleSave(e)}>
+                        {renderFormGroup("First name", "firstName", props.user?.firstName, errors.firstName)}
+                        {renderFormGroup("Last name", "lastName", props.user?.lastName, errors.lastName)}
+                        {renderFormGroup("Username", "username", props.user?.username, errors.username)}
+                        {renderFormGroup("Email", "email", props.user?.email, errors.email)}
+                        {isNew && renderFormGroup("Password", "password", props.user?.password, errors.password)}
+                        <RenderFormSelect
+                            label="Authorities"
+                            name="authorities"
+                            error={errors.authorities}
+                            entities={authorities}
+                            isMultiple={true}
+                        />
+                        <Button className="d-block mx-auto"  type="submit" variant="primary" > Save </Button>
                     </Form>
                 </Modal.Body>
             </Modal>

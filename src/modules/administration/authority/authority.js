@@ -1,13 +1,12 @@
 import React, {useEffect, useState} from "react";
 import useEntitiesService from "../../../services/entities-service";
 import {Button, Card, Col, Container, Row, Table} from "react-bootstrap";
-import {NavLink} from "react-router-dom";
-import ViewArrowSort from "../../../shared/layout/view/view-arrow-sort";
 import {Trash3Fill} from "react-bootstrap-icons";
-import Pageable from "../../../shared/layout/pageable";
+import Pageable from "../../../shared/components/pageable";
 import Loading from "../../../shared/layout/loading";
 
 import {CreateOrUpdateAuthority} from "./authority-create-or-update";
+import SortButton from "../../../shared/components/sort-button";
 
 const Authority = () => {
 
@@ -59,14 +58,10 @@ const Authority = () => {
                     <thead>
                     <tr>
                         <th>Id
-                            <NavLink onClick={() => sort("id")}>
-                                <ViewArrowSort sortParam="id" keySort={keySort} isSort={isSort}/>
-                            </NavLink>
+                            <SortButton sortParam="id" keySort={keySort} isSort={isSort} onSort={sort} />
                         </th>
                         <th>Name
-                            <NavLink onClick={() => sort("name")}>
-                                <ViewArrowSort sortParam="name" keySort={keySort} isSort={isSort}/>
-                            </NavLink>
+                            <SortButton sortParam="name" keySort={keySort} isSort={isSort} onSort={sort} />
                         </th>
                         <th>Actions</th>
                     </tr>

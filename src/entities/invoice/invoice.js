@@ -1,6 +1,5 @@
-import {useState, useEffect, useContext} from "react";
+import React, {useState, useEffect, useContext} from "react";
 
-import {NavLink} from "react-router-dom";
 import {Button, Container, Table, Card, Row, Col} from "react-bootstrap";
 import {FiletypePdf, Trash3Fill} from "react-bootstrap-icons";
 
@@ -8,9 +7,9 @@ import useEntitiesService from "../../services/entities-service";
 import {CreateOrUpdateInvoice} from "./invoice-create-or-update";
 import ViewSupplier from "../supplier/supplier-view";
 import ViewCustomer from "../customer/customer-view";
-import Pageable from "../../shared/layout/pageable";
+import Pageable from "../../shared/components/pageable";
 import Loading from "../../shared/layout/loading";
-import ViewArrowSort from "../../shared/layout/view/view-arrow-sort";
+import SortButton from "../../shared/components/sort-button";
 import AuthContext from "../../context/auth-context";
 
 const Invoice = () => {
@@ -68,15 +67,33 @@ const Invoice = () => {
                     <Table striped bordered hover >
                         <thead>
                         <tr>
-                            <th>Id <NavLink onClick={() => sort("id")}> <ViewArrowSort sortParam="id" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                            <th>Number <NavLink onClick={() => sort("number")}> <ViewArrowSort sortParam="number" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                            <th>Date <NavLink onClick={() => sort("date")}> <ViewArrowSort sortParam="date" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                            <th>Description <NavLink onClick={() => sort("description")}> <ViewArrowSort sortParam="description" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                            <th>Price <NavLink onClick={() => sort("unitPrice")}> <ViewArrowSort sortParam="unitPrice" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                            <th>Quantity <NavLink onClick={() => sort("quantity")}> <ViewArrowSort sortParam="quantity" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                            <th>Amount <NavLink onClick={() => sort("amount")}> <ViewArrowSort sortParam="amount" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                            <th>Supplier <NavLink onClick={() => sort("supplier")}> <ViewArrowSort sortParam="supplier" keySort={keySort} isSort={isSort}/> </NavLink></th>
-                            <th>Customer <NavLink onClick={() => sort("customer")}> <ViewArrowSort sortParam="customer" keySort={keySort} isSort={isSort}/> </NavLink></th>
+                            <th>Id
+                                <SortButton sortParam="id" keySort={keySort} isSort={isSort} onSort={sort} />
+                            </th>
+                            <th>Number
+                                <SortButton sortParam="number" keySort={keySort} isSort={isSort} onSort={sort} />
+                            </th>
+                            <th>Date
+                                <SortButton sortParam="date" keySort={keySort} isSort={isSort} onSort={sort} />
+                            </th>
+                            <th>Description
+                                <SortButton sortParam="description" keySort={keySort} isSort={isSort} onSort={sort} />
+                            </th>
+                            <th>Price
+                                <SortButton sortParam="unitPrice" keySort={keySort} isSort={isSort} onSort={sort} />
+                            </th>
+                            <th>Quantity
+                                <SortButton sortParam="quantity" keySort={keySort} isSort={isSort} onSort={sort} />
+                            </th>
+                            <th>Amount
+                                <SortButton sortParam="amount" keySort={keySort} isSort={isSort} onSort={sort} />
+                            </th>
+                            <th>Supplier
+                                <SortButton sortParam="supplier" keySort={keySort} isSort={isSort} onSort={sort} />
+                            </th>
+                            <th>Customer
+                                <SortButton sortParam="customer" keySort={keySort} isSort={isSort} onSort={sort} />
+                            </th>
                             <th>Actions</th>
                         </tr>
                         </thead>
