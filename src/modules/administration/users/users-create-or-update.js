@@ -4,7 +4,7 @@ import {PencilFill, Plus} from "react-bootstrap-icons";
 import useEntitiesService from "../../../services/entities-service";
 import Validation from "../../../utils/validation";
 import renderFormGroup from "../../../shared/components/render-form-group";
-import {RenderFormSelect} from "../../../shared/components/render-form-select";
+import RenderFormSelect from "../../../shared/components/render-form-select";
 
 const CreateOrUpdateUsers = (props) => {
 
