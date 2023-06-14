@@ -1,7 +1,7 @@
-import {Button, Container, Modal, Row} from "react-bootstrap";
+import {Button, Container, Modal} from "react-bootstrap";
 import {useContext, useState} from "react";
-import AuthContext from "../../context/auth-context";
-import useIdleTimeout from "../../hooks/hook-timeout";
+import AuthContext from "../../utils/auth-context";
+import useIdleTimeout from "../../utils/hooks/hook-timeout";
 import {useNavigate} from "react-router-dom";
 
 const ModalSessionTimeout = () => {

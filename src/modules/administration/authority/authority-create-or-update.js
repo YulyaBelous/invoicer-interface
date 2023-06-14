@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Button, Form, Modal} from "react-bootstrap";
 import {PencilFill, Plus} from "react-bootstrap-icons";
-import Validation from "../../../entities/validation";
+import Validation from "../../../utils/validation";
 
 export const CreateOrUpdateAuthority = (props) => {
 

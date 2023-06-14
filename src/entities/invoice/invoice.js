@@ -8,9 +8,9 @@ import {CreateOrUpdateInvoice} from "./invoice-create-or-update";
 import ViewSupplier from "../supplier/supplier-view";
 import ViewCustomer from "../customer/customer-view";
 import Pageable from "../../shared/components/pageable";
-import Loading from "../../shared/layout/loading";
+import Loading from "../../shared/components/loading";
 import SortButton from "../../shared/components/sort-button";
-import AuthContext from "../../context/auth-context";
+import AuthContext from "../../utils/auth-context";
 
 const Invoice = () => {
 

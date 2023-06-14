@@ -1,6 +1,6 @@
 import {useContext, useEffect, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
-import AuthContext from "../context/auth-context";
+import AuthContext from "../utils/auth-context";
 import {Button, Container, Modal} from "react-bootstrap";
 
 const parseJwt = (token) => {

@@ -3,9 +3,9 @@ import {Container, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {CardList, CaretRightFill, FileTextFill, HouseDoorFill, PersonCircle, PersonFillGear} from "react-bootstrap-icons";
 import {NavLink, useNavigate} from "react-router-dom";
 
-import RegisterForm from "../../../modules/accounts/register";
-import LoginForm from "../../../modules/accounts/login";
-import AuthContext from "../../../context/auth-context";
+import RegisterForm from "../../modules/accounts/register";
+import LoginForm from "../../modules/accounts/login";
+import AuthContext from "../../utils/auth-context";
 
 const Header = () => {
 

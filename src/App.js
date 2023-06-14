@@ -3,10 +3,10 @@ import {Route, Routes, BrowserRouter as Router} from "react-router-dom";
 
 import useUserService from "./services/user-service";
 import AuthVerify from "./services/auth-verify";
-import AuthContext from "./context/auth-context";
+import AuthContext from "./utils/auth-context";
 
-import Header from "./shared/layout/header/header";
-import Home from "./shared/layout/home/home";
+import Header from "./shared/layout/header";
+import Home from "./shared/layout/home";
 import Invoice from "./entities/invoice/invoice";
 import Supplier from "./entities/supplier/supplier";
 import Customer from "./entities/customer/customer";
@@ -15,7 +15,7 @@ import BankAccount from "./entities/bank-account/bank-account";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import ModalSessionTimeout from "./shared/layout/modal-session-timeout";
+import ModalSessionTimeout from "./shared/components/modal-session-timeout";
 import Users from "./modules/administration/users/users";
 import Authority from "./modules/administration/authority/authority";
 import AvailableCustomer from "./modules/administration/available-customer/available-customer";

@@ -2,7 +2,7 @@ import {Alert, Button, Form, Modal, NavDropdown} from "react-bootstrap";
 import React, {useState} from "react";
 import {CaretRightFill} from "react-bootstrap-icons";
 import useUserService from "../../services/user-service";
-import Validation from "../../entities/validation";
+import Validation from "../../utils/validation";
 
 const RegisterForm = () => {
 

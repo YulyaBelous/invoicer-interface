@@ -1,4 +1,4 @@
-import {useHttp} from "../hooks/hook-http";
+import {useHttp} from "../utils/hooks/hook-http";
 
 const useEntitiesService = () => {
     const {loading, request, error, clearError} = useHttp();

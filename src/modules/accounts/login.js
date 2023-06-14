@@ -3,8 +3,8 @@ import {Alert, Button, Form, Modal, NavDropdown} from "react-bootstrap";
 import {CaretRightFill, PersonCircle} from "react-bootstrap-icons";
 
 import useUserService from "../../services/user-service";
-import AuthContext from "../../context/auth-context";
-import Validation from "../../entities/validation";
+import AuthContext from "../../utils/auth-context";
+import Validation from "../../utils/validation";
 
 const LoginForm = () => {
 

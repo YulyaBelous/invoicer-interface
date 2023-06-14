@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {Button, Form, Modal} from "react-bootstrap";
 import {PencilFill} from "react-bootstrap-icons";
 import useEntitiesService from "../../../services/entities-service";
-import AuthContext from "../../../context/auth-context";
+import AuthContext from "../../../utils/auth-context";
 
 const UpdateAvailableCustomer = (props) => {
 

@@ -3,7 +3,7 @@ import useEntitiesService from "../../../services/entities-service";
 import {Button, Card, Col, Container, Row, Table} from "react-bootstrap";
 import {Trash3Fill} from "react-bootstrap-icons";
 import Pageable from "../../../shared/components/pageable";
-import Loading from "../../../shared/layout/loading";
+import Loading from "../../../shared/components/loading";
 
 import {CreateOrUpdateAuthority} from "./authority-create-or-update";
 import SortButton from "../../../shared/components/sort-button";

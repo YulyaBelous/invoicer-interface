@@ -1,9 +1,9 @@
 import React, {useContext, useEffect, useState} from "react";
 import useEntitiesService from "../../../services/entities-service";
-import AuthContext from "../../../context/auth-context";
+import AuthContext from "../../../utils/auth-context";
 import {Card, Col, Container, Row, Table} from "react-bootstrap";
 import Pageable from "../../../shared/components/pageable";
-import Loading from "../../../shared/layout/loading";
+import Loading from "../../../shared/components/loading";
 import UpdateAvailableCustomer from "./available-customer-update";
 import SortButton from "../../../shared/components/sort-button";
 

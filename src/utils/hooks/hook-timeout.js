@@ -1,6 +1,6 @@
 import {useContext, useState} from "react";
 import {useIdleTimer} from "react-idle-timer";
-import AuthContext from "../context/auth-context";
+import AuthContext from "../auth-context";
 import {useNavigate} from "react-router-dom";
 
 const useIdleTimeout = ({ onIdle, idleTime = 1 }) => {

@@ -8,9 +8,9 @@ import {CreateOrUpdateBankAccount} from "./bank-account-create-or-update";
 
 import ViewAddress from "../address/address-view";
 import Pageable from "../../shared/components/pageable";
-import Loading from "../../shared/layout/loading";
+import Loading from "../../shared/components/loading";
 import SortButton from "../../shared/components/sort-button";
-import AuthContext from "../../context/auth-context";
+import AuthContext from "../../utils/auth-context";
 
 const BankAccount = () => {
 

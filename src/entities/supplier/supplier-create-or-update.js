@@ -1,8 +1,8 @@
 import React, {useContext, useState} from "react";
 import {Button, Form} from "react-bootstrap";
 import {PencilFill, Plus} from "react-bootstrap-icons";
-import AuthContext from "../../context/auth-context";
-import Validation from "../validation";
+import AuthContext from "../../utils/auth-context";
+import Validation from "../../utils/validation";
 import renderFormGroup from "../../shared/components/render-form-group";
 import EntityModal from "../../shared/components/entity-modal";
 

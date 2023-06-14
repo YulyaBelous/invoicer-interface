@@ -4,8 +4,8 @@ import {Button, Form, Modal} from "react-bootstrap";
 import {PencilFill, Plus} from "react-bootstrap-icons";
 
 import useEntitiesService from "../../services/entities-service";
-import Validation from "../validation";
-import AuthContext from "../../context/auth-context";
+import Validation from "../../utils/validation";
+import AuthContext from "../../utils/auth-context";
 
 export const CreateOrUpdateInvoice = (props) => {
 
