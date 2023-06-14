@@ -52,11 +52,9 @@ export const CreateOrUpdateInvoice = (props) => {
            ...invoice,
            [entity]: entities?.find(it => it.id.toString() === value?.toString())
        })
-       if ( !!errors[entity] ) setErrors({...errors, [entity]: null})
     }
 
-    const setField = (e) => {
-       setInvoice({...invoice, [e.target.name] : e.target.value});
+    const setFieldError = (e) => {
         if ( !!errors[e.target.name] ) setErrors({...errors, [e.target.name]: null})
     }
 
@@ -68,10 +66,20 @@ export const CreateOrUpdateInvoice = (props) => {
         if ( Object.keys(newErrors).length > 0 ) {
             setErrors(newErrors)
         } else {
+            const invoiceEntity = {
+                ...invoice,
+                ...values,
+                supplier: invoice.supplier,
+                customer: invoice.customer,
+                addressSupplier: invoice.addressSupplier,
+                bankAccountSupplier: invoice.bankAccountSupplier,
+                addressCustomer: invoice.addressCustomer,
+                bankAccountCustomer: invoice.bankAccountCustomer
+            }
             if(isNew) {
-                props.createInvoice(invoice);
+                props.createInvoice(invoiceEntity);
             } else {
-                props.updateInvoice(invoice, invoice.id);
+                props.updateInvoice(invoiceEntity, invoice.id);
             }
             handleClose();
         }
@@ -116,7 +124,8 @@ export const CreateOrUpdateInvoice = (props) => {
                     <Modal.Title>{isNew? 'Create a new Invoice' : `Edit Invoice ${props.invoice?.id}`}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={e => handleSave(e)}>
+                    <Form onChange={setFieldError} onSubmit={e => handleSave(e)}
+                    >
                         {renderFormGroup("Number", "number", props.invoice?.number, errors.number)}
                         {renderFormGroup("Date", "date", props.invoice?.date, errors.date, "date")}
                         {renderFormGroup("Description", "description", props.invoice?.description, errors.description)}

@@ -21,9 +21,18 @@ const UpdateAvailableCustomer = (props) => {
     }, [])
 
     const handleClickOpen = () => {
+        const checked = new Array(customers.length).fill(false);
+        if (props.supplier.availableCustomers) {
+            props.supplier.availableCustomers.forEach((customer) => {
+                const index = customers.findIndex((c) => c.fullName === customer);
+                if (index !== -1) {
+                    checked[index] = true;
+                }
+            });
+        }
+        setIsChecked(checked);
         setShow(true);
         setSupplier({...props.supplier});
-        setIsChecked(new Array(customers.length).fill(false))
     };
 
     const handleClose = () => {
@@ -40,8 +49,6 @@ const UpdateAvailableCustomer = (props) => {
             .filter((customer, index) => checked[index])
             .map((customer) => customer.fullName);
 
-        console.log(checked)
-        console.log(availableCustomers)
         setSupplier({...supplier, availableCustomers});
     }
     const handleSave = (e) => {
@@ -59,7 +66,7 @@ const UpdateAvailableCustomer = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={e => handleSave(e)}> {customers?.map((customer, i) => (
-                        <div>
+                        <div key={`customer-${customer.id || i}`}>
                             <input
                                 type="checkbox"
                                 name="availableCustomers"

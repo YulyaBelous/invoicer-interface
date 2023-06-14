@@ -89,6 +89,7 @@ export const CreateOrUpdateBankAccount = (props) => {
                 customer: customer,
                 address: newBankAccount?.address,
             };
+            console.log(bankAccountEntity)
             isNew? createBankAccount(bankAccountEntity) : updateBankAccount(bankAccountEntity, bankAccountEntity.id);
             handleClose();
         }

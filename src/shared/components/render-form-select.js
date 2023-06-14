@@ -7,10 +7,9 @@ const RenderFormSelect = ({label, name, error, entities, isMultiple, isNew, valu
             <Form.Group className="mb-3">
                     <Form.Label>{label}</Form.Label>
                     <Form.Select isInvalid={!!error} name={name} multiple={isMultiple}>
-                            {!isMultiple && <option> {isNew ? `Select ${label}` : value}
-                            </option>}
+                            {!isMultiple && <option> {isNew ? `Select ${label}` : value} </option>}
                             {entities?.map(entity => (
-                                <option value={entity.name? entity.name: entity.id} key={entity.id}>
+                                <option value={isMultiple? entity.name : entity.id} key={entity.id}>
                                         {entity.name? entity.name: `${entity.country}, ${entity.city}, ${entity.postCode}, ${entity.streetLine1}`}
                                 </option>
                             ))}
