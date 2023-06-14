@@ -4,7 +4,7 @@ import useEntitiesService from "../../services/entities-service";
 import {PencilFill, Plus} from "react-bootstrap-icons";
 import AuthContext from "../../utils/auth-context";
 import Validation from "../../utils/validation";
-import {RenderFormSelect} from "../../shared/components/render-form-select";
+import RenderFormSelect from "../../shared/components/render-form-select";
 import renderFormGroup from "../../shared/components/render-form-group";
 import EntityModal from "../../shared/components/entity-modal";
 import RadioButtons from "../../shared/components/radio-buttons";

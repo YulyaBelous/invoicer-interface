@@ -1,8 +1,8 @@
 import React from "react";
 import {Form} from "react-bootstrap";
 
-export const RenderFormSelect = ({label, name, error, entities, isMultiple, isNew, value}) => {
-console.log(value)
+const RenderFormSelect = ({label, name, error, entities, isMultiple, isNew, value}) => {
+
         return (
             <Form.Group className="mb-3">
                     <Form.Label>{label}</Form.Label>
@@ -20,5 +20,6 @@ console.log(value)
                     </Form.Control.Feedback>
             </Form.Group>
         )
-
 };
+
+export default RenderFormSelect;

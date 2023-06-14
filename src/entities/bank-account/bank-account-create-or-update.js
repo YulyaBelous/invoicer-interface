@@ -6,7 +6,7 @@ import AuthContext from "../../utils/auth-context";
 import Validation from "../../utils/validation";
 import EntityModal from "../../shared/components/entity-modal";
 import renderFormGroup from "../../shared/components/render-form-group";
-import {RenderFormSelect} from "../../shared/components/render-form-select";
+import RenderFormSelect from "../../shared/components/render-form-select";
 import RadioButtons from "../../shared/components/radio-buttons";
 
 export const CreateOrUpdateBankAccount = (props) => {
