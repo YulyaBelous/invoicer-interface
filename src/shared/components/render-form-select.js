@@ -2,7 +2,7 @@ import React from "react";
 import {Form} from "react-bootstrap";
 
 export const RenderFormSelect = ({label, name, error, entities, isMultiple, isNew, value}) => {
-
+console.log(value)
         return (
             <Form.Group className="mb-3">
                     <Form.Label>{label}</Form.Label>

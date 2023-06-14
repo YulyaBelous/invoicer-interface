@@ -6,6 +6,7 @@ import {PencilFill, Plus} from "react-bootstrap-icons";
 import useEntitiesService from "../../services/entities-service";
 import Validation from "../../utils/validation";
 import AuthContext from "../../utils/auth-context";
+import renderFormGroup from "../../shared/components/render-form-group";
 
 export const CreateOrUpdateInvoice = (props) => {
 
@@ -115,83 +116,13 @@ export const CreateOrUpdateInvoice = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={e => handleSave(e)}>
-                        <Form.Group className="mb-3">
-                            <Form.Label >Number</Form.Label>
-                            <Form.Control
-                                onChange={setField}
-                                isInvalid={!!errors.number}
-                                defaultValue={props.invoice?.number}
-                                name="number"
-                                placeholder="Number" />
-                            <Form.Control.Feedback type="invalid">
-                                { errors.number }
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label >Date</Form.Label>
-                            <Form.Control
-                                onChange={setField}
-                                isInvalid={!!errors.date}
-                                defaultValue={props.invoice?.date}
-                                type="date"
-                                name="date"/>
-                            <Form.Control.Feedback type="invalid">
-                                {errors.date}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label >Description</Form.Label>
-                            <Form.Control
-                                onChange={setField}
-                                isInvalid={!!errors.description}
-                                defaultValue={props.invoice?.description}
-                                name="description"
-                                placeholder="Description"/>
-                            <Form.Control.Feedback type="invalid">
-                                {errors.description}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label >Price</Form.Label>
-                            <Form.Control
-                                onChange={setField}
-                                isInvalid={!!errors.unitPrice}
-                                defaultValue={props.invoice?.unitPrice}
-                                type="number"
-                                step={0.1}
-                                name="unitPrice"
-                                placeholder="Price"/>
-                            <Form.Control.Feedback type="invalid">
-                                {errors.unitPrice}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label >Quantity</Form.Label>
-                            <Form.Control
-                                onChange={setField}
-                                isInvalid={!!errors.quantity}
-                                defaultValue={props.invoice?.quantity}
-                                type="number"
-                                name="quantity"
-                                placeholder="Quantity"/>
-                            <Form.Control.Feedback type="invalid">
-                                {errors.quantity}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label >Amount</Form.Label>
-                            <Form.Control
-                                onChange={setField}
-                                isInvalid={!!errors.amount}
-                                defaultValue={props.invoice?.amount}
-                                type="number"
-                                step={0.1}
-                                name="amount"
-                                placeholder="Amount"/>
-                            <Form.Control.Feedback type="invalid">
-                                {errors.amount}
-                            </Form.Control.Feedback>
-                        </Form.Group>
+                        {renderFormGroup("Number", "number", props.invoice?.number, errors.number)}
+                        {renderFormGroup("Date", "date", props.invoice?.date, errors.date, "date")}
+                        {renderFormGroup("Description", "description", props.invoice?.description, errors.description)}
+                        {renderFormGroup("Price", "unitPrice", props.invoice?.unitPrice, errors.unitPrice, "number",  0.1)}
+                        {renderFormGroup("Quantity", "quantity",  props.invoice?.quantity, errors.quantity, "number")}
+                        {renderFormGroup("Amount", "amount", props.invoice?.amount, errors.amount, "number",  0.1)}
+
                         <Form.Group className="mb-3">
                             <Form.Label >Supplier</Form.Label>
                             <Form.Select onChange={(e) => handleChange(e, suppliers)} isInvalid={!!errors.supplier} name="supplier">

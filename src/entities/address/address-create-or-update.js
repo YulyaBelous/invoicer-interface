@@ -98,8 +98,21 @@ export const CreateOrUpdateAddress = (props) => {
                     {renderFormGroup("Phone 1", "phone1", address?.phone1, errors.phone1)}
                     {renderFormGroup("Phone 2", "phone2", address?.phone2, errors.phone2)}
                     {isAdmin? <RadioButtons radioValue={radioValue} setRadioValue={setRadioValue}/> : null}
-                    {isAdmin? (radioValue === '1' ? <RenderFormSelect title="Supplier" entities={suppliers} entity={address} valid={errors.supplier} isNew={isNew}/>
-                        : <RenderFormSelect title="Customer" entities={customers} entity={address} valid={errors.customer} isNew={isNew}/>) : null}
+                    {isAdmin? (radioValue === '1' ?
+                        <RenderFormSelect
+                            label="Supplier"
+                            name="supplier"
+                            entities={suppliers}
+                            value={address?.supplier?.name}
+                            error={errors.supplier}
+                            isNew={isNew}/>
+                        : <RenderFormSelect
+                            label="Customer"
+                            name="customer"
+                            entities={customers}
+                            value={address?.customer?.name}
+                            error={errors.customer}
+                            isNew={isNew}/>) : null}
                     <Button className="d-block mx-auto" type="submit"  variant="primary" >
                         Save
                     </Button>
