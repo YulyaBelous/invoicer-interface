@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, {useState, useEffect} from "react";
 
 import {Button, Container, Table, Card, Dropdown, Col, Row} from "react-bootstrap";
 import {Trash3Fill} from "react-bootstrap-icons";
@@ -9,7 +9,6 @@ import ViewAddress from "../address/address-view";
 import Pageable from "../../shared/components/pageable";
 import Loading from "../../shared/components/loading";
 import SortButton from "../../shared/components/sort-button";
-import AuthContext from "../../utils/auth-context";
 
 const Customer = () => {
 
@@ -22,25 +21,23 @@ const Customer = () => {
 
     const {getEntities, createEntity, deleteEntity, updateEntity, loading} = useEntitiesService();
 
-    const {user} = useContext(AuthContext);
-
     useEffect(() => {
-        getEntities('customers', setCustomers, currentPage, user.username).then(value => {
+        getEntities('customers', setCustomers, currentPage).then(value => {
             setPageable(value);
         });
     }, []);
 
     const createCustomer = async (customer) => {
-        await createEntity('customers', customer, setCustomers, currentPage, user.username);
+        await createEntity('customers', customer, setCustomers, currentPage);
     }
 
     const updateCustomer = async (customer, id) => {
-        await updateEntity('customers', customer, setCustomers, id, currentPage, user.username);
+        await updateEntity('customers', customer, setCustomers, id, currentPage);
     }
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('customers', setCustomers, curPage, user.username).then(value => {
+        getEntities('customers', setCustomers, curPage).then(value => {
             setPageable(value);
         });
     }
@@ -50,7 +47,7 @@ const Customer = () => {
         setKeySort(sortParam);
         setIsSort(!isSort);
         isSort? sortDirect = "desc" : sortDirect = "asc";
-        getEntities('customers', setCustomers, currentPage, user.username, sortParam, sortDirect).then(value => {
+        getEntities('customers', setCustomers, currentPage, sortParam, sortDirect).then(value => {
             setPageable(value);
         });
     }
@@ -114,7 +111,7 @@ const Customer = () => {
                                     </Col>
                                     <Col style={{paddingRight: 10, paddingLeft: 3}}>
                                         <Button
-                                            onClick={() => deleteEntity('customers', customer.id, setCustomers, currentPage, user.username)} variant="danger"><Trash3Fill/></Button>
+                                            onClick={() => deleteEntity('customers', customer.id, setCustomers, currentPage)} variant="danger"><Trash3Fill/></Button>
                                     </Col>
                                 </Row>
                             </td>

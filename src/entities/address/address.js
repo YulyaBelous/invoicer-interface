@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, {useState, useEffect} from "react";
 
 import {Button, Container, Table, Card, Col, Row} from "react-bootstrap";
 import {Trash3Fill} from "react-bootstrap-icons";
@@ -8,7 +8,6 @@ import {CreateOrUpdateAddress} from "./address-create-or-update";
 import Pageable from "../../shared/components/pageable";
 import Loading from "../../shared/components/loading";
 import SortButton from "../../shared/components/sort-button";
-import AuthContext from "../../utils/auth-context";
 
 const Address = () => {
 
@@ -21,25 +20,23 @@ const Address = () => {
 
     const {getEntities, createEntity, deleteEntity, updateEntity, loading} = useEntitiesService();
 
-    const {user} = useContext(AuthContext);
-
     useEffect(() => {
-        getEntities('addresses', setAddress, currentPage, user.username).then(value => {
+        getEntities('addresses', setAddress, currentPage).then(value => {
             setPageable(value);
         });
     }, []);
 
     const createAddress = async (address) => {
-        await createEntity('addresses', address, setAddress, currentPage, user.username);
+        await createEntity('addresses', address, setAddress, currentPage);
     }
 
     const updateAddress = async (address, id) => {
-        await updateEntity('addresses', address, setAddress, id, currentPage, user.username);
+        await updateEntity('addresses', address, setAddress, id, currentPage);
     }
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('addresses', setAddress, curPage, user.username).then(value => {
+        getEntities('addresses', setAddress, curPage).then(value => {
             setPageable(value);
         });
     }
@@ -49,7 +46,7 @@ const Address = () => {
         setKeySort(sortParam);
         setIsSort(!isSort);
         isSort? sortDirect = "desc" : sortDirect = "asc";
-        getEntities('addresses', setAddress, currentPage, user.username, sortParam, sortDirect).then(value => {
+        getEntities('addresses', setAddress, currentPage, sortParam, sortDirect).then(value => {
             setPageable(value);
         });
     }
@@ -113,7 +110,7 @@ const Address = () => {
                                         <CreateOrUpdateAddress updateAddress={updateAddress} address={address} isNew={false}/>
                                     </Col>
                                     <Col style={{paddingRight: 10, paddingLeft: 3}}>
-                                        <Button onClick={() => deleteEntity('addresses', address.id, setAddress, currentPage, user.username)}
+                                        <Button onClick={() => deleteEntity('addresses', address.id, setAddress, currentPage)}
                                                 variant="danger"><Trash3Fill/></Button>
                                     </Col>
                                 </Row>

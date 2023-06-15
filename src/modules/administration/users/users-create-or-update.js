@@ -49,7 +49,6 @@ const CreateOrUpdateUsers = (props) => {
         const formData = new FormData(e.target);
         const values = Object.fromEntries(formData.entries());
         const newErrors = validation(values);
-        console.log(user)
         if ( Object.keys(newErrors).length === 0) {
             isNew ? props.createUser(user) : props.updateUser(user, user.id);
             handleClose();

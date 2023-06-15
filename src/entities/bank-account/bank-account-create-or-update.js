@@ -27,12 +27,12 @@ export const CreateOrUpdateBankAccount = (props) => {
     const { validation } = Validation();
 
     useEffect(() => {
-        getEntities('addresses', setAddress, 0, user.username);
+        getEntities('addresses', setAddress);
         if (isAdmin || isSupplier) {
-            getEntities('suppliers', setSuppliers, 0, user.username);
+            getEntities('suppliers', setSuppliers);
         }
         if (isAdmin || isCustomer) {
-            getEntities('customers', setCustomers, 0, user.username);
+            getEntities('customers', setCustomers);
         }
     }, []);
 

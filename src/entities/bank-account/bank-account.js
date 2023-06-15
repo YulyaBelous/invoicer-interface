@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, {useState, useEffect} from "react";
 
 import {Button, Container, Table, Card, Col, Row} from "react-bootstrap";
 import {Trash3Fill} from "react-bootstrap-icons";
@@ -10,7 +10,6 @@ import ViewAddress from "../address/address-view";
 import Pageable from "../../shared/components/pageable";
 import Loading from "../../shared/components/loading";
 import SortButton from "../../shared/components/sort-button";
-import AuthContext from "../../utils/auth-context";
 
 const BankAccount = () => {
 
@@ -23,25 +22,23 @@ const BankAccount = () => {
 
     const {getEntities, createEntity, deleteEntity, updateEntity, loading} = useEntitiesService();
 
-    const {user} = useContext(AuthContext);
-
     useEffect(() => {
-        getEntities('bank-accounts', setBankAccounts, currentPage, user.username).then(value => {
+        getEntities('bank-accounts', setBankAccounts, currentPage).then(value => {
             setPageable(value);
         });
     }, []);
 
     const createBankAccount = async (bankAccount) => {
-        await createEntity('bank-accounts', bankAccount, setBankAccounts, currentPage, user.username);
+        await createEntity('bank-accounts', bankAccount, setBankAccounts, currentPage);
     }
 
     const updateBankAccount = async (bankAccount, id) => {
-        await updateEntity('bank-accounts', bankAccount, setBankAccounts, id, currentPage, user.username);
+        await updateEntity('bank-accounts', bankAccount, setBankAccounts, id, currentPage);
     }
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('bank-accounts', setBankAccounts, curPage, user.username).then(value => {
+        getEntities('bank-accounts', setBankAccounts, curPage).then(value => {
             setPageable(value);
         });
     }
@@ -51,7 +48,7 @@ const BankAccount = () => {
         setKeySort(sortParam);
         setIsSort(!isSort);
         isSort? sortDirect = "desc" : sortDirect = "asc";
-        getEntities('bank-accounts', setBankAccounts, currentPage, user.username, sortParam, sortDirect).then(value => {
+        getEntities('bank-accounts', setBankAccounts, currentPage, sortParam, sortDirect).then(value => {
             setPageable(value);
         });
     }
@@ -111,7 +108,7 @@ const BankAccount = () => {
                                         <CreateOrUpdateBankAccount updateBankAccount={updateBankAccount} bankAccount={account} isNew={false}/>
                                     </Col>
                                     <Col style={{paddingRight: 10, paddingLeft: 3}}>
-                                        <Button onClick={() => deleteEntity('bank-accounts', account.id, setBankAccounts, currentPage, user.username)}
+                                        <Button onClick={() => deleteEntity('bank-accounts', account.id, setBankAccounts, currentPage)}
                                                 variant="danger"><Trash3Fill/></Button>
                                     </Col>
                                 </Row>

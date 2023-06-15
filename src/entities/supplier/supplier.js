@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, {useState, useEffect} from "react";
 
 import {Button, Container, Table, Card, Dropdown, Col, Row} from "react-bootstrap";
 import {Trash3Fill} from "react-bootstrap-icons";
@@ -9,7 +9,6 @@ import ViewAddress from "../address/address-view";
 import Pageable from "../../shared/components/pageable";
 import Loading from "../../shared/components/loading";
 import SortButton from "../../shared/components/sort-button";
-import AuthContext from "../../utils/auth-context";
 
 const Supplier = () => {
 
@@ -22,25 +21,23 @@ const Supplier = () => {
 
     const {getEntities, createEntity, deleteEntity, updateEntity, loading} = useEntitiesService();
 
-    const {user} = useContext(AuthContext);
-
     useEffect(() => {
-        getEntities('suppliers', setSuppliers, currentPage, user.username).then(value => {
+        getEntities('suppliers', setSuppliers, currentPage).then(value => {
             setPageable(value);
         });
     }, []);
 
     const createSupplier = async (supplier, currentPage) => {
-        await createEntity('suppliers', supplier, setSuppliers, currentPage, user.username);
+        await createEntity('suppliers', supplier, setSuppliers, currentPage);
     }
 
     const updateSupplier = async (supplier, id, currentPage) => {
-        await updateEntity('suppliers', supplier, setSuppliers, id, currentPage, user.username);
+        await updateEntity('suppliers', supplier, setSuppliers, id, currentPage);
     }
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('suppliers', setSuppliers, curPage, user.username).then(value => {
+        getEntities('suppliers', setSuppliers, curPage).then(value => {
             setPageable(value);
         });
     }
@@ -50,7 +47,7 @@ const Supplier = () => {
         setKeySort(sortParam);
         setIsSort(!isSort);
         isSort? sortDirect = "desc" : sortDirect = "asc";
-        getEntities('suppliers', setSuppliers, currentPage, user.username, sortParam, sortDirect).then(value => {
+        getEntities('suppliers', setSuppliers, currentPage, sortParam, sortDirect).then(value => {
             setPageable(value);
         });
     }
@@ -114,7 +111,7 @@ const Supplier = () => {
                                     </Col>
                                     <Col style={{paddingRight: 10, paddingLeft: 3}}>
                                         <Button
-                                            onClick={() => deleteEntity('suppliers', supplier.id, setSuppliers, currentPage, user.username)}
+                                            onClick={() => deleteEntity('suppliers', supplier.id, setSuppliers, currentPage)}
                                             variant="danger"><Trash3Fill/></Button>
                                     </Col>
                                 </Row>

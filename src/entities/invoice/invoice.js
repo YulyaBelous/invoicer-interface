@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, {useState, useEffect} from "react";
 
 import {Button, Container, Table, Card, Row, Col} from "react-bootstrap";
 import {FiletypePdf, Trash3Fill} from "react-bootstrap-icons";
@@ -10,7 +10,6 @@ import ViewCustomer from "../customer/customer-view";
 import Pageable from "../../shared/components/pageable";
 import Loading from "../../shared/components/loading";
 import SortButton from "../../shared/components/sort-button";
-import AuthContext from "../../utils/auth-context";
 
 const Invoice = () => {
 
@@ -23,25 +22,23 @@ const Invoice = () => {
 
     const {getEntities, createEntity, deleteEntity, updateEntity, reportEntity, loading} = useEntitiesService();
 
-    const {user} = useContext(AuthContext);
-
     useEffect( () => {
-         getEntities('invoices', setInvoices, currentPage, user.username).then(value => {
+         getEntities('invoices', setInvoices, currentPage).then(value => {
              setPageable(value);
          });
     }, []);
 
     const createInvoice = async (invoice) => {
-         await createEntity('invoices', invoice, setInvoices, currentPage, user.username);
+         await createEntity('invoices', invoice, setInvoices, currentPage);
     }
 
     const updateInvoice = async (invoice, id) => {
-        await updateEntity('invoices', invoice, setInvoices, id, currentPage, user.username);
+        await updateEntity('invoices', invoice, setInvoices, id, currentPage);
     }
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('invoices', setInvoices, curPage, user.username).then(value => {
+        getEntities('invoices', setInvoices, curPage).then(value => {
             setPageable(value);
         });
     }
@@ -51,7 +48,7 @@ const Invoice = () => {
         setKeySort(sortParam);
         setIsSort(!isSort);
         isSort? sortDirect = "desc" : sortDirect = "asc";
-        getEntities('invoices', setInvoices, currentPage, user.username, sortParam, sortDirect).then(value => {
+        getEntities('invoices', setInvoices, currentPage, sortParam, sortDirect).then(value => {
             setPageable(value);
         });
     }
@@ -118,7 +115,7 @@ const Invoice = () => {
                                             <Button onClick={() => report('invoices', invoice.id)} variant="secondary"><FiletypePdf/></Button>
                                         </Col>
                                         <Col style={{paddingRight: 10, paddingLeft: 3}}>
-                                            <Button onClick={() => deleteEntity('invoices', invoice.id, setInvoices, currentPage, user.username)}
+                                            <Button onClick={() => deleteEntity('invoices', invoice.id, setInvoices, currentPage)}
                                                     variant="danger"><Trash3Fill/></Button>
                                         </Col>
                                     </Row>
