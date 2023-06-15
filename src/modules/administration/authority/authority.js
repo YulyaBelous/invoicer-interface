@@ -45,7 +45,7 @@ const Authority = () => {
         setKeySort(sortParam);
         setIsSort(!isSort);
         isSort? sortDirect = "desc" : sortDirect = "asc";
-        getEntities('admin/authorities', setAuthorities, currentPage, "user", sortParam, sortDirect).then(value => {
+        getEntities('admin/authorities', setAuthorities, currentPage, sortParam, sortDirect).then(value => {
             setPageable(value);
         });
     }

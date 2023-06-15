@@ -1,10 +1,10 @@
-import React, {useContext, useEffect, useState} from "react";
-import useEntitiesService from "../../../services/entities-service";
-import AuthContext from "../../../utils/auth-context";
+import React, {useEffect, useState} from "react";
 import {Card, Col, Container, Row, Table} from "react-bootstrap";
+
+import UpdateAvailableCustomer from "./available-customer-update";
+import useEntitiesService from "../../../services/entities-service";
 import Pageable from "../../../shared/components/pageable";
 import Loading from "../../../shared/components/loading";
-import UpdateAvailableCustomer from "./available-customer-update";
 import SortButton from "../../../shared/components/sort-button";
 
 const AvailableCustomer = () => {
@@ -18,22 +18,19 @@ const AvailableCustomer = () => {
 
     const {getEntities, updateEntity, loading} = useEntitiesService();
 
-    const {user} = useContext(AuthContext);
-
     useEffect(() => {
-        getEntities('suppliers', setSuppliers, currentPage, user.username).then(value => {
+        getEntities('suppliers', setSuppliers, currentPage).then(value => {
             setPageable(value);
         });
     }, []);
 
     const updateAvailableCustomer = async (supplier, id) => {
-
-        await updateEntity('suppliers', supplier, setSuppliers, id, currentPage, user.username);
+        await updateEntity('suppliers', supplier, setSuppliers, id, currentPage);
     }
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('suppliers', setSuppliers, curPage, user.username).then(value => {
+        getEntities('suppliers', setSuppliers, curPage).then(value => {
             setPageable(value);
         });
     }
@@ -43,7 +40,7 @@ const AvailableCustomer = () => {
         setKeySort(sortParam);
         setIsSort(!isSort);
         isSort? sortDirect = "desc" : sortDirect = "asc";
-        getEntities('suppliers', setSuppliers, currentPage, user.username, sortParam, sortDirect).then(value => {
+        getEntities('suppliers', setSuppliers, currentPage, sortParam, sortDirect).then(value => {
             setPageable(value);
         });
     }
@@ -66,7 +63,6 @@ const AvailableCustomer = () => {
                     </thead>
                     <tbody>
                     {suppliers.map((supplier, i) => (
-
                         <tr key={`entity-${i}`}>
                             <td>{supplier.id}</td>
                             <td>{supplier.fullName}</td>

@@ -1,8 +1,9 @@
-import React, {useContext, useEffect, useState} from "react";
-import {Button, Form, Modal} from "react-bootstrap";
+import React, {useEffect, useState} from "react";
+import {Button, Form} from "react-bootstrap";
 import {PencilFill} from "react-bootstrap-icons";
+
 import useEntitiesService from "../../../services/entities-service";
-import AuthContext from "../../../utils/auth-context";
+import EntityModal from "../../../shared/components/entity-modal";
 
 const UpdateAvailableCustomer = (props) => {
 
@@ -14,10 +15,8 @@ const UpdateAvailableCustomer = (props) => {
 
     const {getEntities} = useEntitiesService();
 
-    const {user} = useContext(AuthContext);
-
     useEffect(() => {
-        getEntities('customers', setCustomers, 0, user.username);
+        getEntities('customers', setCustomers);
     }, [])
 
     const handleClickOpen = () => {
@@ -60,29 +59,24 @@ const UpdateAvailableCustomer = (props) => {
     return (
         <div>
             <Button onClick={ handleClickOpen} variant="primary"><PencilFill/></Button>
-            <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>{`Edit Supplier ${props.supplier?.id}`}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onSubmit={e => handleSave(e)}> {customers?.map((customer, i) => (
-                        <div key={`customer-${customer.id || i}`}>
-                            <input
-                                type="checkbox"
-                                name="availableCustomers"
-                                key={`customer-${i}`}
-                                value={customer.fullName}
-                                checked={isChecked[i]}
-                                onChange={e => handleChange(e, i)}
-                            />
-                            {customer.fullName}
-                        </div>))}
-                        <Button className="d-block mx-auto"  type="submit" variant="primary" >
-                            Save
-                        </Button>
-                    </Form>
-                </Modal.Body>
-            </Modal>
+            <EntityModal show={show} handleClose={handleClose} title={`Edit Supplier ${props.supplier?.id}`}>
+                <Form onSubmit={e => handleSave(e)}> {customers?.map((customer, i) => (
+                    <div key={`customer-${customer.id || i}`}>
+                        <input
+                            type="checkbox"
+                            name="availableCustomers"
+                            key={`customer-${i}`}
+                            value={customer.fullName}
+                            checked={isChecked[i]}
+                            onChange={e => handleChange(e, i)}
+                        />
+                        {customer.fullName}
+                    </div>))}
+                    <Button className="d-block mx-auto"  type="submit" variant="primary" >
+                        Save
+                    </Button>
+                </Form>
+            </EntityModal>
         </div>
     );
 }

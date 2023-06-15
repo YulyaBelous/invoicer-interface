@@ -21,7 +21,6 @@ const useUserService = () => {
 
     const logout = () => {
         localStorage.removeItem("user");
-
     }
 
     return {register, login, logout, loading, request, error, clearError}

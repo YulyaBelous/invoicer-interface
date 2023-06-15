@@ -44,7 +44,7 @@ const Users = () => {
         setKeySort(sortParam);
         setIsSort(!isSort);
         isSort? sortDirect = "desc" : sortDirect = "asc";
-        getEntities('admin/users', setUsers, currentPage, "user", sortParam, sortDirect).then(value => {
+        getEntities('admin/users', setUsers, currentPage, sortParam, sortDirect).then(value => {
             setPageable(value);
         });
     }

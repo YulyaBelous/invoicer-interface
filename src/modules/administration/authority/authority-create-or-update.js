@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {Button, Form, Modal} from "react-bootstrap";
+import {Button, Form} from "react-bootstrap";
 import {PencilFill, Plus} from "react-bootstrap-icons";
 import Validation from "../../../utils/validation";
+import renderFormGroup from "../../../shared/components/render-form-group";
+import EntityModal from "../../../shared/components/entity-modal";
 
 export const CreateOrUpdateAuthority = (props) => {
 
@@ -49,25 +51,16 @@ export const CreateOrUpdateAuthority = (props) => {
         <div>
             {isNew? <Button onClick={handleClickOpen} className="mb-3 float-sm-end" variant="primary"> <Plus size={29}/> New authority</Button>
                 : <Button onClick={ handleClickOpen} variant="primary"><PencilFill/></Button>}
-            <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>{isNew? 'Create a new Authority' : `Edit Authority ${props.authority?.id}`}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onChange={handleChange} onSubmit={e => handleSave(e)}>
-                        <Form.Group className="mb-3">
-                            <Form.Label >Name</Form.Label>
-                            <Form.Control isInvalid={!!errors.name} defaultValue={props.authority?.name} name="name"/>
-                            <Form.Control.Feedback type="invalid">
-                                { errors.name }
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Button className="d-block mx-auto" type="submit" variant="primary" >
-                            Save
-                        </Button>
-                    </Form>
-                </Modal.Body>
-            </Modal>
+            <EntityModal
+                show={show}
+                handleClose={handleClose}
+                title={isNew? 'Create a new Authority' : `Edit Authority ${props.authority?.id}`}
+            >
+                <Form onChange={handleChange} onSubmit={e => handleSave(e)}>
+                    {renderFormGroup("Name", "name", props.authority?.name, errors.name)}
+                    <Button className="d-block mx-auto" type="submit" variant="primary" > Save </Button>
+                </Form>
+            </EntityModal>
         </div>
     );
 }

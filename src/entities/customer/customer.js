@@ -22,9 +22,7 @@ const Customer = () => {
     const {getEntities, createEntity, deleteEntity, updateEntity, loading} = useEntitiesService();
 
     useEffect(() => {
-        getEntities('customers', setCustomers, currentPage).then(value => {
-            setPageable(value);
-        });
+        getEntities('customers', setCustomers, currentPage).then(value => setPageable(value));
     }, []);
 
     const createCustomer = async (customer) => {
@@ -37,9 +35,7 @@ const Customer = () => {
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('customers', setCustomers, curPage).then(value => {
-            setPageable(value);
-        });
+        getEntities('customers', setCustomers, curPage).then(value => setPageable(value));
     }
 
     const sort = (sortParam) => {

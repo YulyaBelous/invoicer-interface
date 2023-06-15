@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {ArrowDown, ArrowUp} from "react-bootstrap-icons";
+
 const SortButton = ({ sortParam, keySort, isSort, onSort }) => {
 
     const isActive = sortParam === keySort;

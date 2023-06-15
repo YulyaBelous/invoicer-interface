@@ -21,9 +21,7 @@ const Address = () => {
     const {getEntities, createEntity, deleteEntity, updateEntity, loading} = useEntitiesService();
 
     useEffect(() => {
-        getEntities('addresses', setAddress, currentPage).then(value => {
-            setPageable(value);
-        });
+        getEntities('addresses', setAddress, currentPage).then(value => setPageable(value));
     }, []);
 
     const createAddress = async (address) => {
@@ -36,9 +34,7 @@ const Address = () => {
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('addresses', setAddress, curPage).then(value => {
-            setPageable(value);
-        });
+        getEntities('addresses', setAddress, curPage).then(value => setPageable(value));
     }
 
     const sort = (sortParam) => {

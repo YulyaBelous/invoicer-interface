@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {Button, Form, Modal} from "react-bootstrap";
+import {Button, Form} from "react-bootstrap";
 import {PencilFill, Plus} from "react-bootstrap-icons";
 import useEntitiesService from "../../../services/entities-service";
 import Validation from "../../../utils/validation";
 import renderFormGroup from "../../../shared/components/render-form-group";
 import RenderFormSelect from "../../../shared/components/render-form-select";
+import EntityModal from "../../../shared/components/entity-modal";
 
 const CreateOrUpdateUsers = (props) => {
 
@@ -61,28 +62,27 @@ const CreateOrUpdateUsers = (props) => {
         <div>
             {isNew? <Button onClick={handleClickOpen} className="mb-3 float-sm-end" variant="primary"> <Plus size={29}/> New user</Button>
                 : <Button onClick={ handleClickOpen} variant="primary"><PencilFill/></Button>}
-            <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>{isNew? 'Create a new User' : `Edit User ${props.user?.id}`}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onChange={handleChange} onSubmit={e => handleSave(e)}>
-                        {renderFormGroup("First name", "firstName", props.user?.firstName, errors.firstName)}
-                        {renderFormGroup("Last name", "lastName", props.user?.lastName, errors.lastName)}
-                        {renderFormGroup("Username", "username", props.user?.username, errors.username)}
-                        {renderFormGroup("Email", "email", props.user?.email, errors.email)}
-                        {isNew && renderFormGroup("Password", "password", props.user?.password, errors.password)}
-                        <RenderFormSelect
-                            label="Authorities"
-                            name="authorities"
-                            error={errors.authorities}
-                            entities={authorities}
-                            isMultiple={true}
-                        />
-                        <Button className="d-block mx-auto"  type="submit" variant="primary" > Save </Button>
-                    </Form>
-                </Modal.Body>
-            </Modal>
+            <EntityModal
+                show={show}
+                handleClose={handleClose}
+                title={isNew? 'Create a new User' : `Edit User ${props.user?.id}`}
+            >
+                <Form onChange={handleChange} onSubmit={e => handleSave(e)}>
+                    {renderFormGroup("First name", "firstName", props.user?.firstName, errors.firstName)}
+                    {renderFormGroup("Last name", "lastName", props.user?.lastName, errors.lastName)}
+                    {renderFormGroup("Username", "username", props.user?.username, errors.username)}
+                    {renderFormGroup("Email", "email", props.user?.email, errors.email)}
+                    {isNew && renderFormGroup("Password", "password", props.user?.password, errors.password)}
+                    <RenderFormSelect
+                        label="Authorities"
+                        name="authorities"
+                        error={errors.authorities}
+                        entities={authorities}
+                        isMultiple={true}
+                    />
+                    <Button className="d-block mx-auto"  type="submit" variant="primary" > Save </Button>
+                </Form>
+            </EntityModal>
         </div>
     );
 }

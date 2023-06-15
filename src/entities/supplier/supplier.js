@@ -22,9 +22,7 @@ const Supplier = () => {
     const {getEntities, createEntity, deleteEntity, updateEntity, loading} = useEntitiesService();
 
     useEffect(() => {
-        getEntities('suppliers', setSuppliers, currentPage).then(value => {
-            setPageable(value);
-        });
+        getEntities('suppliers', setSuppliers, currentPage).then(value => setPageable(value));
     }, []);
 
     const createSupplier = async (supplier, currentPage) => {
@@ -37,9 +35,7 @@ const Supplier = () => {
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('suppliers', setSuppliers, curPage).then(value => {
-            setPageable(value);
-        });
+        getEntities('suppliers', setSuppliers, curPage).then(value => setPageable(value));
     }
 
     const sort = (sortParam) => {

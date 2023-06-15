@@ -23,9 +23,7 @@ const Invoice = () => {
     const {getEntities, createEntity, deleteEntity, updateEntity, reportEntity, loading} = useEntitiesService();
 
     useEffect( () => {
-         getEntities('invoices', setInvoices, currentPage).then(value => {
-             setPageable(value);
-         });
+         getEntities('invoices', setInvoices, currentPage).then(value => setPageable(value));
     }, []);
 
     const createInvoice = async (invoice) => {
@@ -38,9 +36,7 @@ const Invoice = () => {
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('invoices', setInvoices, curPage).then(value => {
-            setPageable(value);
-        });
+        getEntities('invoices', setInvoices, curPage).then(value => setPageable(value));
     }
 
     const sort = (sortParam) => {

@@ -1,10 +1,12 @@
 import React, {useContext, useState} from "react";
-import {Alert, Button, Form, Modal, NavDropdown} from "react-bootstrap";
+import {Alert, Button, Form, NavDropdown} from "react-bootstrap";
 import {CaretRightFill, PersonCircle} from "react-bootstrap-icons";
 
 import useUserService from "../../services/user-service";
 import AuthContext from "../../utils/auth-context";
 import Validation from "../../utils/validation";
+import renderFormGroup from "../../shared/components/render-form-group";
+import EntityModal from "../../shared/components/entity-modal";
 
 const LoginForm = () => {
 
@@ -63,36 +65,19 @@ const LoginForm = () => {
     return(
         <>
             <NavDropdown.Item onClick={handleClickOpen} > <CaretRightFill color="royalblue"/> Log in</NavDropdown.Item>
-            <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Log in</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div ><PersonCircle className="d-block mx-auto" size={100} style={{color: "gray"}}/></div>
-                    <Form onChange={handleChange} onSubmit={e => handleSave(e)}>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Username</Form.Label>
-                            <Form.Control isInvalid={!!errors.username} name="username" placeholder="Username"/>
-                            <Form.Control.Feedback type="invalid">
-                                { errors.username }
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Password</Form.Label>
-                            <Form.Control isInvalid={!!errors.password}  name="password" type="password" placeholder="Password"/>
-                            <Form.Control.Feedback type="invalid">
-                                { errors.password }
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        {error? (viewMessage(error, "danger")) : (message !== null? viewMessage(message, "danger") : null)}
-                        <div className="d-grid gap-2">
-                            <Button type="submit"  disabled={loading}  variant="primary" >
-                                {loading? "Loading..." : "Log in"}
-                            </Button>
-                        </div>
-                    </Form>
-                </Modal.Body>
-            </Modal>
+            <EntityModal show={show} handleClose={handleClose} title="Log in">
+                <div ><PersonCircle className="d-block mx-auto" size={100} style={{color: "gray"}}/></div>
+                <Form onChange={handleChange} onSubmit={e => handleSave(e)}>
+                    {renderFormGroup("Username", "username", '', errors.username)}
+                    {renderFormGroup("Password", "password", '', errors.password)}
+                    {error? (viewMessage(error, "danger")) : (message !== null? viewMessage(message, "danger") : null)}
+                    <div className="d-grid gap-2">
+                        <Button type="submit"  disabled={loading}  variant="primary" >
+                            {loading? "Loading..." : "Log in"}
+                        </Button>
+                    </div>
+                </Form>
+            </EntityModal>
         </>
     )
 }

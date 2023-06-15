@@ -28,7 +28,7 @@ const Pageable = (props) => {
                             <Pagination.Item onClick={() => handleClick(currentPage - 2)}>{currentPage-2}</Pagination.Item>
                             <Pagination.Item onClick={() => handleClick(currentPage - 1)}>{currentPage-1}</Pagination.Item>
                     </>
-                    ) : (null)
+                    ) : null
                 }
 
             <Pagination.Item active>{currentPage}</Pagination.Item>

@@ -23,9 +23,7 @@ const BankAccount = () => {
     const {getEntities, createEntity, deleteEntity, updateEntity, loading} = useEntitiesService();
 
     useEffect(() => {
-        getEntities('bank-accounts', setBankAccounts, currentPage).then(value => {
-            setPageable(value);
-        });
+        getEntities('bank-accounts', setBankAccounts, currentPage).then(value => setPageable(value));
     }, []);
 
     const createBankAccount = async (bankAccount) => {
@@ -38,9 +36,7 @@ const BankAccount = () => {
 
     const setPage = (curPage) => {
         setCurrentPage(curPage);
-        getEntities('bank-accounts', setBankAccounts, curPage).then(value => {
-            setPageable(value);
-        });
+        getEntities('bank-accounts', setBankAccounts, curPage).then(value => setPageable(value));
     }
 
     const sort = (sortParam) => {
